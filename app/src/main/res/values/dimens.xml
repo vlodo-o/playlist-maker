@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_size">22sp</dimen>
+    <dimen name="menu_text_size">22sp</dimen>
+    <dimen name="text_size">16sp</dimen>
     <dimen name="button_radius">16dp</dimen>
     <dimen name="icon_button_padding">10dp</dimen>
+    <dimen name="settings_padding_start">16dp</dimen>
+    <dimen name="settings_vertical">21dp</dimen>
 </resources>

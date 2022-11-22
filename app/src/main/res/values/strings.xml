@@ -3,4 +3,8 @@
     <string name="search" translatable="false">Поиск</string>
     <string name="media_library" translatable="false">Медиатека</string>
     <string name="settings" translatable="false">Настройки</string>
+    <string name="dark_theme" translatable="false">Темная тема</string>
+    <string name="share" translatable="false">Поделиться приложением</string>
+    <string name="write_support" translatable="false">Написать в поддержку</string>
+    <string name="agreement" translatable="false">Пользовательское соглашение</string>
 </resources>
