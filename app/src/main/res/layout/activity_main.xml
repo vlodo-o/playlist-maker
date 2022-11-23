@@ -10,6 +10,7 @@
     android:paddingEnd="15dp"
     android:paddingBottom="28dp">
     <Button
+        android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -24,6 +25,7 @@
         app:iconTint="@color/yp_black">
     </Button>
     <Button
+        android:id="@+id/media"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -38,6 +40,7 @@
         app:iconTint="@color/yp_black">
     </Button>
     <Button
+        android:id="@+id/settings"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
