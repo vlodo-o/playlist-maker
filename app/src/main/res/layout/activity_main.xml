@@ -17,20 +17,20 @@
         android:textColor="@color/yp_white"
         android:textSize="@dimen/menu_text_size" />
     <Button
-        style="@style/MenuButton"
         android:id="@+id/search"
+        style="@style/MenuButton"
         android:text="@string/search"
         app:icon="@drawable/ic_search">
     </Button>
     <Button
-        style="@style/MenuButton"
         android:id="@+id/media"
+        style="@style/MenuButton"
         android:text="@string/media_library"
         app:icon="@drawable/ic_medialib">
     </Button>
     <Button
-        style="@style/MenuButton"
         android:id="@+id/settings"
+        style="@style/MenuButton"
         android:text="@string/settings"
         app:icon="@drawable/ic_settings">
     </Button>

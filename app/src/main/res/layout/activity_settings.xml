@@ -17,7 +17,7 @@
             android:layout_margin="@dimen/margin_tiny"
             android:backgroundTint="?attr/colorPrimaryVariant"
             app:icon="@drawable/ic_back"
-            app:iconTint="?attr/colorOnSecondary"/>
+            app:iconTint="?attr/colorOnSecondary" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_size"
@@ -29,21 +29,25 @@
             android:textSize="@dimen/menu_text_size" />
     </LinearLayout>
     <Switch
+        android:id="@+id/switch_theme"
         style="@style/SettingsButton"
         android:paddingEnd="5dp"
         android:text="@string/dark_theme"
         android:textSize="@dimen/text_size" />
     <Button
+        android:id="@+id/share"
         style="@style/SettingsButton"
         android:paddingEnd="@dimen/settings_padding"
         android:text="@string/share"
         app:drawableEndCompat="@drawable/ic_share"/>
     <Button
+        android:id="@+id/support"
         style="@style/SettingsButton"
         android:paddingEnd="14dp"
         android:text="@string/write_support"
         app:drawableEndCompat="@drawable/ic_support" />
     <Button
+        android:id="@+id/agreement"
         style="@style/SettingsButton"
         android:paddingEnd="20dp"
         android:text="@string/agreement"
