@@ -11,6 +11,7 @@
         android:layout_marginBottom="24dp"
         android:orientation="horizontal">
         <Button
+            android:id="@+id/back"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="@dimen/button_size"
             android:layout_height="@dimen/button_size"
@@ -21,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_size"
-            android:paddingStart="@dimen/padding_small"
+            android:paddingHorizontal="@dimen/padding_small"
             android:layout_marginVertical="@dimen/margin_tiny"
             android:paddingTop="8dp"
             android:text="@string/settings"

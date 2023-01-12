@@ -11,6 +11,11 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        val backButton = findViewById<Button>(R.id.back)
+        backButton.setOnClickListener {
+            super.onBackPressed();
+        }
+
         val shareButton = findViewById<Button>(R.id.share)
         shareButton.setOnClickListener {
             val sendIntent: Intent = Intent().apply {
