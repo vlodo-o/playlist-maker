@@ -6,9 +6,9 @@
         <item name="colorPrimaryVariant">@color/yp_black</item>
         <item name="colorOnPrimary">@color/yp_white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/yp_blue</item>
+        <item name="colorSecondary">@color/yp_white</item>
         <item name="colorSecondaryVariant">@color/yp_white</item>
-        <item name="colorOnSecondary">@color/yp_white</item>
+        <item name="colorOnSecondary">@color/yp_black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->

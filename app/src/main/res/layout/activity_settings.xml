@@ -18,7 +18,7 @@
             android:layout_margin="@dimen/margin_tiny"
             android:backgroundTint="?attr/colorPrimaryVariant"
             app:icon="@drawable/ic_back"
-            app:iconTint="?attr/colorOnSecondary" />
+            app:iconTint="?attr/colorOnPrimary" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/button_size"
@@ -26,7 +26,7 @@
             android:layout_marginVertical="@dimen/margin_tiny"
             android:paddingTop="8dp"
             android:text="@string/settings"
-            android:textColor="?attr/colorOnSecondary"
+            android:textColor="?attr/colorOnPrimary"
             android:textSize="@dimen/menu_text_size" />
     </LinearLayout>
     <Switch

@@ -20,12 +20,13 @@
         <item name="android:backgroundTint">?attr/colorPrimaryVariant</item>
         <item name="android:paddingStart">@dimen/settings_padding</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/text_size</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:letterSpacing">0</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="cornerRadius">0dp</item>
-        <item name="drawableTint">?attr/colorSecondaryVariant</item>
+        <item name="drawableTint">?attr/colorSecondary</item>
     </style>
+
 </resources>
