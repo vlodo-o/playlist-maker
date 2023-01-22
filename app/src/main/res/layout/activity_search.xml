@@ -5,65 +5,41 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimaryVariant"
     android:orientation="vertical">
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/Toolbar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="12dp"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/back"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:layout_margin="@dimen/margin_tiny"
-            android:backgroundTint="?attr/colorPrimaryVariant"
-            app:icon="@drawable/ic_back"
-            app:iconTint="?attr/colorOnPrimary" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_size"
-            android:paddingHorizontal="@dimen/padding_small"
-            android:layout_marginVertical="@dimen/margin_tiny"
-            android:paddingTop="@dimen/padding_small"
-            android:text="@string/search"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="@dimen/menu_text_size" />
-    </LinearLayout>
-    <androidx.cardview.widget.CardView
+        android:layout_height="@dimen/toolbar_height"
+        app:title="@string/search" />
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="0dp">
-        <FrameLayout
-            android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/search_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/search_text"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:background="?attr/colorSecondaryVariant"
-                android:drawableStart="@drawable/ic_search"
-                android:drawablePadding="9dp"
-                android:drawableTint="?attr/colorOnSecondary"
-                android:hint="@string/search"
-                android:inputType="text"
-                android:maxLines="1"
-                android:paddingStart="13dp"
-                android:paddingEnd="35dp"
-                android:textColor="@color/yp_black"
-                android:textColorHint="?attr/colorOnSecondary" />
-            <ImageView
-                android:id="@+id/clear_text"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:layout_marginEnd="14dp"
-                android:src="@drawable/ic_cross"
-                android:visibility="gone"
-                app:tint="?attr/colorOnSecondary" />
-        </FrameLayout>
-    </androidx.cardview.widget.CardView>
-
+            android:layout_height="36dp"
+            android:background="@drawable/rounded_shape"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="@dimen/padding_small"
+            android:drawableTint="?attr/colorOnSecondary"
+            android:hint="@string/search"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="13dp"
+            android:paddingEnd="35dp"
+            android:textColor="@color/yp_black"
+            android:textColorHint="?attr/colorOnSecondary" />
+        <ImageView
+            android:id="@+id/clear_text_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginEnd="14dp"
+            android:src="@drawable/ic_cross"
+            android:visibility="gone"
+            app:tint="?attr/colorOnSecondary" />
+    </FrameLayout>
 </LinearLayout>

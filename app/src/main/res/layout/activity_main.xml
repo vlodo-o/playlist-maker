@@ -5,9 +5,8 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
     android:orientation="vertical"
-    android:paddingStart="17dp"
+    android:paddingHorizontal="16dp"
     android:paddingTop="14dp"
-    android:paddingEnd="15dp"
     android:paddingBottom="28dp">
     <TextView
         android:layout_width="wrap_content"
@@ -17,17 +16,17 @@
         android:textColor="@color/yp_white"
         android:textSize="@dimen/menu_text_size" />
     <Button
-        android:id="@+id/search"
+        android:id="@+id/search_button"
         style="@style/MenuButton"
         android:text="@string/search"
         app:icon="@drawable/ic_search"/>
     <Button
-        android:id="@+id/media"
+        android:id="@+id/media_button"
         style="@style/MenuButton"
         android:text="@string/media_library"
         app:icon="@drawable/ic_medialib"/>
     <Button
-        android:id="@+id/settings"
+        android:id="@+id/settings_button"
         style="@style/MenuButton"
         android:text="@string/settings"
         app:icon="@drawable/ic_settings"/>

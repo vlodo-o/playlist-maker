@@ -5,50 +5,33 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimaryVariant"
     android:orientation="vertical">
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/Toolbar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="24dp"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/back"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:layout_margin="@dimen/margin_tiny"
-            android:backgroundTint="?attr/colorPrimaryVariant"
-            app:icon="@drawable/ic_back"
-            app:iconTint="?attr/colorOnPrimary" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_size"
-            android:paddingHorizontal="@dimen/padding_small"
-            android:layout_marginVertical="@dimen/margin_tiny"
-            android:paddingTop="8dp"
-            android:text="@string/settings"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="@dimen/menu_text_size" />
-    </LinearLayout>
+        android:layout_height="@dimen/toolbar_height"
+        app:title="@string/settings" />
     <Switch
         android:id="@+id/switch_theme"
         style="@style/SettingsButton"
+        android:layout_marginTop="24dp"
         android:paddingEnd="5dp"
         android:text="@string/dark_theme"
         android:textSize="@dimen/text_size" />
     <Button
-        android:id="@+id/share"
+        android:id="@+id/share_button"
         style="@style/SettingsButton"
         android:paddingEnd="@dimen/settings_padding"
         android:text="@string/share"
         app:drawableEndCompat="@drawable/ic_share"/>
     <Button
-        android:id="@+id/support"
+        android:id="@+id/support_button"
         style="@style/SettingsButton"
         android:paddingEnd="14dp"
         android:text="@string/write_support"
         app:drawableEndCompat="@drawable/ic_support" />
     <Button
-        android:id="@+id/agreement"
+        android:id="@+id/agreement_button"
         style="@style/SettingsButton"
         android:paddingEnd="20dp"
         android:text="@string/agreement"
