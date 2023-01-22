@@ -3,14 +3,15 @@
     <style name="Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/yp_blue</item>
-        <item name="colorPrimaryVariant">@color/yp_blue</item>
-        <item name="colorOnPrimary">@color/yp_white</item>
+        <item name="colorPrimaryVariant">@color/white_background</item>
+        <item name="colorOnPrimary">@color/yp_black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/yp_blue</item>
-        <item name="colorSecondaryVariant">@color/yp_blue</item>
-        <item name="colorOnSecondary">@color/yp_black</item>
+        <item name="colorSecondary">@color/yp_text_gray</item>
+        <item name="colorSecondaryVariant">@color/yp_light_gray</item>
+        <item name="colorOnSecondary">@color/yp_text_gray</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
+        <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
 </resources>
