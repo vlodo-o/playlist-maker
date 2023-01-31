@@ -21,7 +21,7 @@
     <Button
         android:id="@+id/share_button"
         style="@style/SettingsButton"
-        android:paddingEnd="@dimen/settings_padding"
+        android:paddingEnd="@dimen/dimen_16dp"
         android:text="@string/share"
         app:drawableEndCompat="@drawable/ic_share"/>
     <Button

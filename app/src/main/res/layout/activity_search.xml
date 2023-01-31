@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimaryVariant"
@@ -23,7 +24,7 @@
             android:layout_height="36dp"
             android:background="@drawable/rounded_shape"
             android:drawableStart="@drawable/ic_search"
-            android:drawablePadding="@dimen/padding_small"
+            android:drawablePadding="@dimen/dimen_8dp"
             android:drawableTint="?attr/colorOnSecondary"
             android:hint="@string/search"
             android:inputType="text"
@@ -42,4 +43,13 @@
             android:visibility="gone"
             app:tint="?attr/colorOnSecondary" />
     </FrameLayout>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/track_list_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen_24dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/view_track_list_item"/>
 </LinearLayout>
