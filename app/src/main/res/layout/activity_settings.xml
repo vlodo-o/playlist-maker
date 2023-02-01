@@ -11,8 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
         app:title="@string/settings" />
+
     <Switch
-        android:id="@+id/switch_theme"
+        android:id="@+id/theme_switch"
         style="@style/SettingsButton"
         android:layout_marginTop="24dp"
         android:paddingEnd="5dp"
