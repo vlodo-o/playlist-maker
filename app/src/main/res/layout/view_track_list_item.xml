@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp">
     <ImageView
@@ -18,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
         android:layout_marginTop="14dp"
-        android:text="Track name"
+        tools:text="Track name"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="@dimen/text_size"
         app:layout_constraintStart_toStartOf="@+id/track_cover"
@@ -34,21 +35,21 @@
             android:id="@+id/track_artist_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Artist"
+            tools:text="Artist"
             android:textColor="?attr/colorSecondary"
             android:textSize="@dimen/small_text_size" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dimen_4dp"
-            android:text="·"
+            android:text="@string/separator_dot"
             android:textColor="?attr/colorSecondary"
             android:textSize="@dimen/small_text_size" />
         <TextView
             android:id="@+id/track_time_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Time"
+            tools:text="Time"
             android:textColor="?attr/colorSecondary"
             android:textSize="@dimen/small_text_size" />
     </LinearLayout>
