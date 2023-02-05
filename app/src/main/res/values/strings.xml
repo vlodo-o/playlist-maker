@@ -16,4 +16,5 @@
     <string name="support_email" translatable="false">vabramochkina@yandex.ru</string>
 
     <string name="agreement_url" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="separator_dot">·</string>
 </resources>
