@@ -27,10 +27,12 @@
             android:drawablePadding="@dimen/dimen_8dp"
             android:drawableTint="?attr/colorOnSecondary"
             android:hint="@string/search"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
             android:paddingStart="13dp"
             android:paddingEnd="35dp"
+            android:singleLine="true"
             android:textColor="@color/yp_black"
             android:textColorHint="?attr/colorOnSecondary" />
         <ImageView
