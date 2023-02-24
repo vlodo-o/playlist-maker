@@ -83,12 +83,18 @@ class SearchActivity : AppCompatActivity() {
 
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val query = searchEditText.text.toString()
-                if (query.isNotEmpty()) {
-                    searchTracks(query)
+                searchText = searchEditText.text.toString()
+                if (searchText.isNotEmpty()) {
+                    searchTracks(searchText)
                 }
             }
             false
+        }
+
+        refreshButton.setOnClickListener {
+            if (searchText.isNotEmpty()) {
+                searchTracks(searchText)
+            }
         }
 
     }
@@ -138,7 +144,7 @@ class SearchActivity : AppCompatActivity() {
                 R.drawable.ic_network_error
             }
             else -> {
-                refreshButton.visibility = View.GONE
+                refreshButton.visibility = View.VISIBLE
                 R.drawable.ic_network_error
             }})
         errorTextView.text = error
@@ -154,17 +160,21 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
+        const val LIST_VISIBILITY = "LIST_VISIBILITY"
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_TEXT, searchText)
+        outState.putInt(LIST_VISIBILITY, trackListRecyclerView.visibility)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchText = savedInstanceState.getString(SEARCH_TEXT).toString()
         searchEditText.setText(searchText)
+        val visibility = savedInstanceState.getInt(LIST_VISIBILITY)
+        trackListRecyclerView.visibility = visibility
     }
 
 }
