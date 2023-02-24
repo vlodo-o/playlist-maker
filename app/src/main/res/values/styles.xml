@@ -47,4 +47,12 @@
         <item name="drawableTint">?attr/colorSecondary</item>
     </style>
 
+    <style name="SmallButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:backgroundTint">?attr/colorOnPrimary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/yp_white</item>
+        <item name="android:textSize">@dimen/small_button_text_size</item>
+        <item name="cornerRadius">@dimen/small_button_radius</item>
+    </style>
+
 </resources>

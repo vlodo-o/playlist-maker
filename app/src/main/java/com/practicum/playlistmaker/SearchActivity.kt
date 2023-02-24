@@ -7,15 +7,19 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.practicum.playlistmaker.adapter.TrackListAdapter
 import com.practicum.playlistmaker.api.ITunesSearchApi
-import com.practicum.playlistmaker.api.searchTracks
+import com.practicum.playlistmaker.api.TracksResponse
 import com.practicum.playlistmaker.model.Track
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -24,6 +28,17 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchEditText: EditText
 
     private var searchText = ""
+    private lateinit var trackListRecyclerView: RecyclerView
+    private lateinit var errorTextView: TextView
+    private lateinit var errorImage: ImageView
+    private lateinit var refreshButton: Button
+
+    private val iTunesBaseUrl = "https://itunes.apple.com"
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(iTunesBaseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+    private val iTunesSearch = retrofit.create(ITunesSearchApi::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +47,11 @@ class SearchActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         val clearButton = findViewById<ImageView>(R.id.clear_text_button)
         searchEditText = findViewById(R.id.search_edit_text)
-        val trackListRecyclerView = findViewById<RecyclerView>(R.id.track_list_recycler_view)
+        trackListRecyclerView = findViewById<RecyclerView>(R.id.track_list_recycler_view)
+        //val errorLayout = findViewById<LinearLayout>(R.id.error_layout)
+        errorTextView = findViewById<TextView>(R.id.error_text)
+        errorImage = findViewById<ImageView>(R.id.error_image)
+        refreshButton = findViewById<Button>(R.id.refresh_button)
 
         setSupportActionBar(toolbar)
         searchEditText.requestFocus()
@@ -64,12 +83,65 @@ class SearchActivity : AppCompatActivity() {
 
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val tracks = searchTracks(searchEditText.text.toString())
-                trackListRecyclerView.adapter = TrackListAdapter(tracks)
+                val query = searchEditText.text.toString()
+                if (query.isNotEmpty()) {
+                    searchTracks(query)
+                }
             }
             false
         }
 
+    }
+
+    private fun searchTracks(query: String) {
+        val tracks = ArrayList<Track>()
+
+        iTunesSearch.getTrack(query).enqueue(object : Callback<TracksResponse> {
+            override fun onResponse(call: Call<TracksResponse>,
+                                    response: Response<TracksResponse>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        if (response.body()?.tracks?.isNotEmpty() == true) {
+                            tracks.clear()
+                            tracks.addAll(response.body()?.tracks!!)
+                            trackListRecyclerView.adapter = TrackListAdapter(tracks)
+                            trackListRecyclerView.visibility = View.VISIBLE
+                        }
+                        else {
+                            showMessage(getString(R.string.not_found))
+                        }
+                    }
+                    else ->
+                        showMessage(getString(R.string.network_error))
+                }
+
+            }
+
+            override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
+                showMessage(getString(R.string.network_error))
+            }
+
+        })
+    }
+
+
+    private fun showMessage(error: String) {
+        trackListRecyclerView.visibility = View.GONE
+        errorImage.setImageResource(when(error) {
+            getString(R.string.not_found) -> {
+                refreshButton.visibility = View.GONE
+                R.drawable.ic_not_found
+            }
+            getString(R.string.network_error) -> {
+                refreshButton.visibility = View.VISIBLE
+                R.drawable.ic_network_error
+            }
+            else -> {
+                refreshButton.visibility = View.GONE
+                R.drawable.ic_network_error
+            }})
+        errorTextView.text = error
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {

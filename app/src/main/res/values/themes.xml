@@ -13,5 +13,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/ys_display_medium</item>
+
+        <item name="color">@color/yp_white</item>
     </style>
 </resources>
