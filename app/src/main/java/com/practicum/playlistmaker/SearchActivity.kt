@@ -10,9 +10,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.practicum.playlistmaker.adapter.TrackListAdapter
 import com.practicum.playlistmaker.api.ITunesSearchApi
 import com.practicum.playlistmaker.api.TracksResponse
@@ -26,9 +25,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchEditText: EditText
-
     private var searchText = ""
+
     private lateinit var trackListRecyclerView: RecyclerView
+    private val tracks = ArrayList<Track>()
+    private val trackListAdapter = TrackListAdapter(tracks)
+
     private lateinit var errorTextView: TextView
     private lateinit var errorImage: ImageView
     private lateinit var refreshButton: Button
@@ -45,10 +47,14 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
         val clearButton = findViewById<ImageView>(R.id.clear_text_button)
         searchEditText = findViewById(R.id.search_edit_text)
+
         trackListRecyclerView = findViewById<RecyclerView>(R.id.track_list_recycler_view)
-        //val errorLayout = findViewById<LinearLayout>(R.id.error_layout)
+        trackListRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        trackListRecyclerView.adapter = trackListAdapter
+
         errorTextView = findViewById<TextView>(R.id.error_text)
         errorImage = findViewById<ImageView>(R.id.error_image)
         refreshButton = findViewById<Button>(R.id.refresh_button)
@@ -74,6 +80,10 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             searchEditText.text?.clear()
+            trackListRecyclerView.visibility = View.VISIBLE
+            tracks.clear()
+            trackListAdapter.notifyDataSetChanged()
+
             val view = this.currentFocus
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             if (view != null) {
@@ -100,7 +110,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTracks(query: String) {
-        val tracks = ArrayList<Track>()
 
         iTunesSearch.getTrack(query).enqueue(object : Callback<TracksResponse> {
             override fun onResponse(call: Call<TracksResponse>,
@@ -111,8 +120,7 @@ class SearchActivity : AppCompatActivity() {
                         if (response.body()?.tracks?.isNotEmpty() == true) {
                             tracks.clear()
                             tracks.addAll(response.body()?.tracks!!)
-                            trackListRecyclerView.adapter = TrackListAdapter(tracks)
-                            trackListRecyclerView.visibility = View.VISIBLE
+                            trackListAdapter.notifyDataSetChanged()
                         }
                         else {
                             showMessage(getString(R.string.not_found))
