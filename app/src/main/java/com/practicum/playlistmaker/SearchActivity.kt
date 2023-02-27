@@ -24,8 +24,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
+    private lateinit var toolbar: Toolbar
+
     private lateinit var searchEditText: EditText
     private var searchText = ""
+
+    private lateinit var clearButton: ImageView
 
     private lateinit var trackListRecyclerView: RecyclerView
     private val tracks = ArrayList<Track>()
@@ -46,9 +50,9 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar = findViewById<Toolbar>(R.id.toolbar)
 
-        val clearButton = findViewById<ImageView>(R.id.clear_text_button)
+        clearButton = findViewById<ImageView>(R.id.clear_text_button)
         searchEditText = findViewById(R.id.search_edit_text)
 
         trackListRecyclerView = findViewById<RecyclerView>(R.id.track_list_recycler_view)
@@ -118,6 +122,7 @@ class SearchActivity : AppCompatActivity() {
                 when (response.code()) {
                     200 -> {
                         if (response.body()?.tracks?.isNotEmpty() == true) {
+                            trackListRecyclerView.visibility = View.VISIBLE
                             tracks.clear()
                             tracks.addAll(response.body()?.tracks!!)
                             trackListAdapter.notifyDataSetChanged()
@@ -138,7 +143,6 @@ class SearchActivity : AppCompatActivity() {
 
         })
     }
-
 
     private fun showMessage(error: String) {
         trackListRecyclerView.visibility = View.GONE
@@ -166,11 +170,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        const val SEARCH_TEXT = "SEARCH_TEXT"
-        const val LIST_VISIBILITY = "LIST_VISIBILITY"
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_TEXT, searchText)
@@ -185,4 +184,8 @@ class SearchActivity : AppCompatActivity() {
         trackListRecyclerView.visibility = visibility
     }
 
+    companion object {
+        const val SEARCH_TEXT = "SEARCH_TEXT"
+        const val LIST_VISIBILITY = "LIST_VISIBILITY"
+    }
 }
