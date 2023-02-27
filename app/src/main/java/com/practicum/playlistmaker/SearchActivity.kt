@@ -50,22 +50,30 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        toolbar = findViewById<Toolbar>(R.id.toolbar)
+        initViews()
 
-        clearButton = findViewById<ImageView>(R.id.clear_text_button)
-        searchEditText = findViewById(R.id.search_edit_text)
-
-        trackListRecyclerView = findViewById<RecyclerView>(R.id.track_list_recycler_view)
         trackListRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         trackListRecyclerView.adapter = trackListAdapter
-
-        errorTextView = findViewById<TextView>(R.id.error_text)
-        errorImage = findViewById<ImageView>(R.id.error_image)
-        refreshButton = findViewById<Button>(R.id.refresh_button)
 
         setSupportActionBar(toolbar)
         searchEditText.requestFocus()
 
+        searchEditTextListener()
+        clearButtonListener()
+        refreshButtonListener()
+    }
+
+    private fun initViews() {
+        toolbar = findViewById(R.id.toolbar)
+        clearButton = findViewById(R.id.clear_text_button)
+        searchEditText = findViewById(R.id.search_edit_text)
+        trackListRecyclerView = findViewById(R.id.track_list_recycler_view)
+        errorTextView = findViewById(R.id.error_text)
+        errorImage = findViewById(R.id.error_image)
+        refreshButton = findViewById(R.id.refresh_button)
+    }
+
+    private fun searchEditTextListener() {
         val searchTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
@@ -82,6 +90,18 @@ class SearchActivity : AppCompatActivity() {
         }
         searchEditText.addTextChangedListener(searchTextWatcher)
 
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                searchText = searchEditText.text.toString()
+                if (searchText.isNotEmpty()) {
+                    searchTracks(searchText)
+                }
+            }
+            false
+        }
+    }
+
+    private fun clearButtonListener() {
         clearButton.setOnClickListener {
             searchEditText.text?.clear()
             trackListRecyclerView.visibility = View.VISIBLE
@@ -94,27 +114,17 @@ class SearchActivity : AppCompatActivity() {
                 inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
             }
         }
+    }
 
-        searchEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchText = searchEditText.text.toString()
-                if (searchText.isNotEmpty()) {
-                    searchTracks(searchText)
-                }
-            }
-            false
-        }
-
+    private fun refreshButtonListener() {
         refreshButton.setOnClickListener {
             if (searchText.isNotEmpty()) {
                 searchTracks(searchText)
             }
         }
-
     }
 
     private fun searchTracks(query: String) {
-
         iTunesSearch.getTrack(query).enqueue(object : Callback<TracksResponse> {
             override fun onResponse(call: Call<TracksResponse>,
                                     response: Response<TracksResponse>
@@ -122,44 +132,44 @@ class SearchActivity : AppCompatActivity() {
                 when (response.code()) {
                     200 -> {
                         if (response.body()?.tracks?.isNotEmpty() == true) {
-                            trackListRecyclerView.visibility = View.VISIBLE
                             tracks.clear()
                             tracks.addAll(response.body()?.tracks!!)
                             trackListAdapter.notifyDataSetChanged()
+                            showSearchResult(SearchStatus.SUCCESS)
                         }
                         else {
-                            showMessage(getString(R.string.not_found))
+                            showSearchResult(SearchStatus.EMPTY_SEARCH)
                         }
                     }
                     else ->
-                        showMessage(getString(R.string.network_error))
+                        showSearchResult(SearchStatus.CONNECTION_ERROR)
                 }
-
             }
 
             override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                showMessage(getString(R.string.network_error))
+                showSearchResult(SearchStatus.CONNECTION_ERROR)
             }
 
         })
     }
 
-    private fun showMessage(error: String) {
-        trackListRecyclerView.visibility = View.GONE
-        errorImage.setImageResource(when(error) {
-            getString(R.string.not_found) -> {
+    private fun showSearchResult(status: SearchStatus) {
+        when(status) {
+            SearchStatus.SUCCESS -> {
+                trackListRecyclerView.visibility = View.VISIBLE
+            }
+            SearchStatus.EMPTY_SEARCH -> {
+                trackListRecyclerView.visibility = View.GONE
                 refreshButton.visibility = View.GONE
-                R.drawable.ic_not_found
+                errorImage.setImageResource(R.drawable.ic_not_found)
+                errorTextView.text = getString(R.string.not_found)
             }
-            getString(R.string.network_error) -> {
+            SearchStatus.CONNECTION_ERROR -> {
+                trackListRecyclerView.visibility = View.GONE
                 refreshButton.visibility = View.VISIBLE
-                R.drawable.ic_network_error
-            }
-            else -> {
-                refreshButton.visibility = View.VISIBLE
-                R.drawable.ic_network_error
-            }})
-        errorTextView.text = error
+                errorImage.setImageResource(R.drawable.ic_network_error)
+                errorTextView.text = getString(R.string.network_error)
+            }}
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -183,6 +193,8 @@ class SearchActivity : AppCompatActivity() {
         val visibility = savedInstanceState.getInt(LIST_VISIBILITY)
         trackListRecyclerView.visibility = visibility
     }
+
+    enum class SearchStatus { SUCCESS, CONNECTION_ERROR, EMPTY_SEARCH }
 
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
