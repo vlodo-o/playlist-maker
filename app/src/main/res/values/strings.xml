@@ -17,4 +17,8 @@
 
     <string name="agreement_url" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
     <string name="separator_dot">·</string>
+
+    <string name="refresh">Обновить</string>
+    <string name="not_found">Ничего не нашлось</string>
+    <string name="network_error">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
 </resources>
