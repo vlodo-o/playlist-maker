@@ -34,7 +34,7 @@
 
     <style name="SettingsButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">61dp</item>
+        <item name="android:layout_height">60dp</item>
         <item name="android:backgroundTint">?attr/colorPrimaryVariant</item>
         <item name="android:paddingStart">@dimen/dimen_16dp</item>
         <item name="android:textAllCaps">false</item>
