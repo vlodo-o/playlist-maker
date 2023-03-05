@@ -46,6 +46,45 @@
             app:tint="?attr/colorOnSecondary" />
     </FrameLayout>
 
+    <LinearLayout
+        android:id="@+id/search_history_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="@dimen/dimen_12dp"
+            android:text="@string/searched"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="@dimen/text_size_20" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/track_history_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="5"
+            tools:listitem="@layout/view_track_list_item" />
+
+        <Button
+            android:id="@+id/clear_history_button"
+            style="@style/SmallButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimen_24dp"
+            android:text="@string/clear_history" />
+
+    </LinearLayout>
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/track_list_recycler_view"
         android:layout_width="match_parent"
@@ -53,7 +92,7 @@
         android:layout_marginTop="@dimen/dimen_24dp"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/view_track_list_item"/>
+        tools:listitem="@layout/view_track_list_item" />
 
     <LinearLayout
         android:id="@+id/error_layout"

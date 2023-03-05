@@ -32,8 +32,16 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearButton: ImageView
 
     private lateinit var trackListRecyclerView: RecyclerView
+    private lateinit var trackHistoryRecyclerView: RecyclerView
     private val tracks = ArrayList<Track>()
+    private val tracksHistory = ArrayList<Track>()
     private val trackListAdapter = TrackListAdapter { trackClickListener(it) }
+    private val trackHistoryAdapter = TrackListAdapter()
+
+    private lateinit var searchHistory: SearchHistory
+
+    private lateinit var historyLayout: LinearLayout
+    private lateinit var clearHistoryButton: Button
 
     private lateinit var errorTextView: TextView
     private lateinit var errorImage: ImageView
@@ -56,6 +64,18 @@ class SearchActivity : AppCompatActivity() {
         trackListRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         trackListRecyclerView.adapter = trackListAdapter
 
+        val sharedPrefs = getSharedPreferences(SEARCH_TRACK_HISTORY, MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPrefs)
+        tracksHistory.addAll(searchHistory.getHistory())
+
+        if (tracksHistory.isNotEmpty()) {
+            historyLayout.visibility = View.VISIBLE
+        }
+
+        trackHistoryAdapter.trackList = tracksHistory
+        trackHistoryRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        trackHistoryRecyclerView.adapter = trackHistoryAdapter
+
         setSupportActionBar(toolbar)
         searchEditText.requestFocus()
 
@@ -69,9 +89,12 @@ class SearchActivity : AppCompatActivity() {
         clearButton = findViewById(R.id.clear_text_button)
         searchEditText = findViewById(R.id.search_edit_text)
         trackListRecyclerView = findViewById(R.id.track_list_recycler_view)
+        trackHistoryRecyclerView = findViewById(R.id.track_history_recycler_view)
         errorTextView = findViewById(R.id.error_text)
         errorImage = findViewById(R.id.error_image)
         refreshButton = findViewById(R.id.refresh_button)
+        historyLayout = findViewById(R.id.search_history_layout)
+        clearHistoryButton = findViewById(R.id.clear_history_button)
     }
 
     private fun searchEditTextListener() {
@@ -114,6 +137,12 @@ class SearchActivity : AppCompatActivity() {
             if (view != null) {
                 inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
             }
+
+            if (searchHistory.getHistory().isNotEmpty()) {
+                historyLayout.visibility = View.VISIBLE
+
+            }
+
         }
     }
 
@@ -155,6 +184,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showSearchResult(status: SearchStatus) {
+        historyLayout.visibility = View.GONE
         when(status) {
             SearchStatus.SUCCESS -> {
                 trackListRecyclerView.visibility = View.VISIBLE
@@ -175,6 +205,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun trackClickListener(track: Track) {
         Toast.makeText(applicationContext, track.trackName + " was clicked", Toast.LENGTH_LONG).show()
+        tracksHistory.add(track)
+        trackHistoryAdapter.notifyDataSetChanged()
+        searchHistory.saveHistory(tracksHistory)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -204,5 +237,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val LIST_VISIBILITY = "LIST_VISIBILITY"
+        const val SEARCH_TRACK_HISTORY = "SEARCH_TRACK_HISTORY"
     }
 }

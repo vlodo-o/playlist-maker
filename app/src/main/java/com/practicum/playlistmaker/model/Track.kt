@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 data class Track (
+    val trackId: String,  // Id трека
     val trackName: String, // Название композиции
     val artistName: String, // Имя исполнителя
     val trackTimeMillis: Int, // Продолжительность трека
