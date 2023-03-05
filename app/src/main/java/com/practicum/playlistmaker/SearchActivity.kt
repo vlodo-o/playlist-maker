@@ -33,7 +33,7 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var trackListRecyclerView: RecyclerView
     private val tracks = ArrayList<Track>()
-    private val trackListAdapter = TrackListAdapter(tracks)
+    private val trackListAdapter = TrackListAdapter { trackClickListener(it) }
 
     private lateinit var errorTextView: TextView
     private lateinit var errorImage: ImageView
@@ -52,6 +52,7 @@ class SearchActivity : AppCompatActivity() {
 
         initViews()
 
+        trackListAdapter.trackList = tracks
         trackListRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         trackListRecyclerView.adapter = trackListAdapter
 
@@ -170,6 +171,10 @@ class SearchActivity : AppCompatActivity() {
                 errorImage.setImageResource(R.drawable.ic_network_error)
                 errorTextView.text = getString(R.string.network_error)
             }}
+    }
+
+    private fun trackClickListener(track: Track) {
+        Toast.makeText(applicationContext, track.trackName + " was clicked", Toast.LENGTH_LONG).show()
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
