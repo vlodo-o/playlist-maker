@@ -82,6 +82,7 @@ class SearchActivity : AppCompatActivity() {
         searchEditTextListener()
         clearButtonListener()
         refreshButtonListener()
+        clearHistoryButtonListener()
     }
 
     private fun initViews() {
@@ -151,6 +152,15 @@ class SearchActivity : AppCompatActivity() {
             if (searchText.isNotEmpty()) {
                 searchTracks(searchText)
             }
+        }
+    }
+
+    private fun clearHistoryButtonListener() {
+        clearHistoryButton.setOnClickListener {
+            tracksHistory.clear()
+            trackHistoryAdapter.notifyDataSetChanged()
+            searchHistory.clearHistory()
+            historyLayout.visibility = View.GONE
         }
     }
 

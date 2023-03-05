@@ -6,7 +6,7 @@ import com.practicum.playlistmaker.model.Track
 
 const val TRACK_SEARCH_HISTORY = "TRACK_SEARCH_HISTORY"
 
-class SearchHistory (val sharedPrefs: SharedPreferences) {
+class SearchHistory (private val sharedPrefs: SharedPreferences) {
 
     fun saveHistory(tracks: ArrayList<Track>) {
         val tracksJson = Gson().toJson(tracks)
@@ -16,6 +16,10 @@ class SearchHistory (val sharedPrefs: SharedPreferences) {
     fun getHistory(): Array<Track> {
         val tracksJson = sharedPrefs.getString(TRACK_SEARCH_HISTORY, null) ?: return emptyArray()
         return Gson().fromJson(tracksJson, Array<Track>::class.java)
+    }
+
+    fun clearHistory() {
+        sharedPrefs.edit().clear().apply()
     }
 
 }
