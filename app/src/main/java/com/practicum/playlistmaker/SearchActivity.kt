@@ -107,6 +107,7 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
                 searchText = s.toString()
+                historyLayout.visibility = if (searchEditText.hasFocus() && s?.isEmpty() == true && tracksHistory.isNotEmpty()) View.VISIBLE else View.GONE
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -124,6 +125,11 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
+
+        searchEditText.setOnFocusChangeListener { view, hasFocus ->
+            historyLayout.visibility = if (hasFocus && searchEditText.text.isEmpty() && tracksHistory.isNotEmpty()) View.VISIBLE else View.GONE
+        }
+
     }
 
     private fun clearButtonListener() {
