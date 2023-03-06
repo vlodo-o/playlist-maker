@@ -73,7 +73,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         trackHistoryAdapter.trackList = tracksHistory
-        trackHistoryRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        trackHistoryRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
         trackHistoryRecyclerView.adapter = trackHistoryAdapter
 
         setSupportActionBar(toolbar)
@@ -215,9 +215,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun trackClickListener(track: Track) {
         Toast.makeText(applicationContext, track.trackName + " was clicked", Toast.LENGTH_LONG).show()
-        tracksHistory.add(track)
+        tracksHistory.clear()
+        tracksHistory.addAll(searchHistory.putTrack(track))
         trackHistoryAdapter.notifyDataSetChanged()
-        searchHistory.saveHistory(tracksHistory)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {

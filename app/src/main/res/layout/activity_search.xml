@@ -15,8 +15,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="@dimen/dimen_16dp"
+        android:layout_marginTop="@dimen/dimen_12dp"
         android:orientation="horizontal">
         <EditText
             android:id="@+id/search_edit_text"
@@ -30,7 +30,7 @@
             android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
-            android:paddingStart="13dp"
+            android:paddingStart="@dimen/dimen_12dp"
             android:paddingEnd="35dp"
             android:singleLine="true"
             android:textColor="@color/yp_black"
@@ -46,43 +46,58 @@
             app:tint="?attr/colorOnSecondary" />
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/search_history_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="32dp"
-        android:orientation="vertical"
-        android:visibility="gone">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="@dimen/dimen_12dp"
-            android:text="@string/searched"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="@dimen/text_size_20" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/track_history_recycler_view"
+        <LinearLayout
+            android:id="@+id/search_history_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="5"
-            tools:listitem="@layout/view_track_list_item" />
+            android:visibility="gone">
 
-        <Button
-            android:id="@+id/clear_history_button"
-            style="@style/SmallButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dimen_24dp"
-            android:text="@string/clear_history" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="@dimen/dimen_12dp"
+                android:text="@string/searched"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="@dimen/text_size_20" />
 
-    </LinearLayout>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/track_history_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="10"
+                    tools:listitem="@layout/view_track_list_item" />
+
+                <Button
+                    android:id="@+id/clear_history_button"
+                    style="@style/SmallButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dimen_24dp"
+                    android:layout_marginBottom="@dimen/dimen_24dp"
+                    android:text="@string/clear_history" />
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
 
 
     <androidx.recyclerview.widget.RecyclerView

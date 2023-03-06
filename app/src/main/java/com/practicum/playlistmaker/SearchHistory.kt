@@ -22,4 +22,19 @@ class SearchHistory (private val sharedPrefs: SharedPreferences) {
         sharedPrefs.edit().clear().apply()
     }
 
+    fun putTrack(track: Track): ArrayList<Track> {
+        val tracks = ArrayList<Track>()
+        tracks.addAll(getHistory())
+
+        if (tracks.contains(track)) {
+            tracks.removeAt(tracks.indexOf(track))
+        } else if (tracks.size == 10) {
+            tracks.removeAt(0)
+        }
+
+        tracks.add(track)
+        saveHistory(tracks)
+        return tracks
+    }
+
 }
