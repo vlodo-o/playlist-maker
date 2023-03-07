@@ -27,14 +27,12 @@ class SettingsActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        val application = application as App
         themeSwitch = findViewById(R.id.theme_switch)
+        themeSwitch.isChecked = application.darkTheme
 
         themeSwitch.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
-        }
-
-        if(getSharedPreferences(DARK_THEME, MODE_PRIVATE).getBoolean(DARK_THEME, false)) {
-            themeSwitch.toggle()
+            application.switchTheme(checked)
         }
 
         shareButton = findViewById(R.id.share_button)

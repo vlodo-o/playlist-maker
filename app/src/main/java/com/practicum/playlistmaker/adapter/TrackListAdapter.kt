@@ -57,4 +57,12 @@ class TrackListAdapter(
         fun onTrackClick(track: Track)
     }
 
+    fun setTracks(tracks: List<Track>?) {
+        trackList.clear()
+        if (tracks != null) {
+            trackList.addAll(tracks)
+        }
+        notifyDataSetChanged()
+    }
+
 }
