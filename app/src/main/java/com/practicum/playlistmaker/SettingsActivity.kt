@@ -10,27 +10,32 @@ import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var toolbar: Toolbar
+    private lateinit var themeSwitch: SwitchMaterial
+    private lateinit var shareButton: Button
+    private lateinit var supportButton: Button
+    private lateinit var agreementButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val themeSwitch = findViewById<Switch>(R.id.theme_switch)
-        themeSwitch.isChecked = resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        themeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
+        val application = application as App
+        themeSwitch = findViewById(R.id.theme_switch)
+        themeSwitch.isChecked = application.darkTheme
+
+        themeSwitch.setOnCheckedChangeListener { switcher, checked ->
+            application.switchTheme(checked)
         }
 
-        val shareButton = findViewById<Button>(R.id.share_button)
+        shareButton = findViewById(R.id.share_button)
         shareButton.setOnClickListener {
             Intent().apply {
                 action = Intent.ACTION_SEND
@@ -41,7 +46,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        val supportButton = findViewById<Button>(R.id.support_button)
+        supportButton = findViewById(R.id.support_button)
         supportButton.setOnClickListener {
             Intent().apply {
                 action = Intent.ACTION_SENDTO
@@ -53,7 +58,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        val agreementButton = findViewById<Button>(R.id.agreement_button)
+        agreementButton = findViewById(R.id.agreement_button)
         agreementButton.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.agreement_url)))
             startActivity(browserIntent)

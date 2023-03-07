@@ -12,14 +12,17 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.model.Track
 
 class TrackListAdapter(
-    private val trackList: List<Track>
+    private val clickListener: TrackClickListener? = null
 ) : RecyclerView.Adapter<TrackListAdapter.TrackViewHolder> () {
+
+    var trackList = ArrayList<Track>()
 
     class TrackViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val trackCoverImageView: ImageView = itemView.findViewById(R.id.track_cover)
         private val trackNameTextView: TextView = itemView.findViewById(R.id.track_name_textview)
         private val trackArtistTextView: TextView = itemView.findViewById(R.id.track_artist_textview)
         private val trackTimeTextView: TextView = itemView.findViewById(R.id.track_time_textview)
+
 
         fun bind(model: Track) {
             val cornerRadius = itemView.resources.getDimensionPixelSize(R.dimen.track_cover_radius)
@@ -43,10 +46,23 @@ class TrackListAdapter(
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(trackList[position])
+        holder.itemView.setOnClickListener { clickListener?.onTrackClick(trackList.get(position)) }
     }
 
     override fun getItemCount(): Int {
         return trackList.size
+    }
+
+    fun interface TrackClickListener {
+        fun onTrackClick(track: Track)
+    }
+
+    fun setTracks(tracks: List<Track>?) {
+        trackList.clear()
+        if (tracks != null) {
+            trackList.addAll(tracks)
+        }
+        notifyDataSetChanged()
     }
 
 }
