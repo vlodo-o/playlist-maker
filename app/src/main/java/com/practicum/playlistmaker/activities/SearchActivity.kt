@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.SearchHistory
 import com.practicum.playlistmaker.adapter.TrackListAdapter
@@ -214,8 +216,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun trackClickListener(track: Track) {
-        Toast.makeText(applicationContext, track.trackName + " was clicked", Toast.LENGTH_LONG).show()
         trackHistoryAdapter.setTracks(searchHistory.putTrack(track))
+        val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK, Gson().toJson(track))
+        startActivity(intent)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
