@@ -1,8 +1,9 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
+import com.practicum.playlistmaker.R
 
 class MedialibActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

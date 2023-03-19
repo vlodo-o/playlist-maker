@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.activities
 
 import android.content.Context
 import android.os.Bundle
@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.SearchHistory
 import com.practicum.playlistmaker.adapter.TrackListAdapter
 import com.practicum.playlistmaker.api.ITunesSearchApi
 import com.practicum.playlistmaker.api.TracksResponse
