@@ -8,4 +8,6 @@
     <color name="yp_red">#FFF56B6C</color>
     <color name="yp_blue">#FF3772E7</color>
     <color name="white_background">#FFF5F5F5</color>
+    <color name="white_25_transparency">#40FFFFFF</color>
+    <color name="gray_25_transparency">#401A1B22</color>
 </resources>

@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_end="20dp" />
+                app:layout_constraintGuide_end="@dimen/dimen_12dp" />
 
             <ImageView
                 android:id="@+id/cover_imageview"
@@ -92,18 +92,13 @@
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/save_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/yp_text_gray"
-                android:foregroundGravity="center"
+                style="@style/PlayerFAB"
                 android:src="@drawable/ic_save"
                 app:layout_constraintBottom_toBottomOf="@id/play_button"
                 app:layout_constraintEnd_toStartOf="@id/play_button"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toTopOf="@id/play_button"
-                app:maxImageSize="24dp"
-                app:tint="@android:color/white" />
+                app:layout_constraintTop_toTopOf="@id/play_button" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/play_button"
@@ -112,38 +107,33 @@
                 android:layout_marginTop="38dp"
                 android:src="@drawable/ic_play"
                 app:backgroundTint="@android:color/transparent"
+                app:elevation="0dp"
                 app:fabCustomSize="84dp"
                 app:layout_constraintEnd_toStartOf="@id/favorite_button"
                 app:layout_constraintStart_toEndOf="@id/save_button"
                 app:layout_constraintTop_toBottomOf="@id/track_artist_textview"
                 app:maxImageSize="84dp"
-                app:tint="@android:color/black" />
-
+                app:tint="?attr/colorOnPrimary" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/favorite_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/yp_text_gray"
-                android:foregroundGravity="center"
+                style="@style/PlayerFAB"
                 android:src="@drawable/ic_favorite"
                 app:layout_constraintBottom_toBottomOf="@id/play_button"
                 app:layout_constraintEnd_toEndOf="@id/right_guideline"
                 app:layout_constraintStart_toEndOf="@id/play_button"
-                app:layout_constraintTop_toTopOf="@id/play_button"
-                app:maxImageSize="24dp"
-                app:tint="@color/yp_white" />
+                app:layout_constraintTop_toTopOf="@id/play_button" />
 
             <TextView
                 android:id="@+id/time_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_12dp"
+                android:text="@string/zero_time"
+                android:textColor="?attr/colorOnPrimary"
                 app:layout_constraintEnd_toEndOf="@id/right_guideline"
                 app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/play_button"
-                tools:text="0:30" />
-
+                app:layout_constraintTop_toBottomOf="@id/play_button" />
 
             <TextView
                 android:id="@+id/duration"
@@ -170,7 +160,6 @@
                 android:text="@string/album"
                 app:layout_constraintBottom_toTopOf="@id/year"
                 app:layout_constraintEnd_toStartOf="@id/changeable_album"
-                app:layout_constraintStart_toStartOf="@id/duration"
                 app:layout_constraintTop_toBottomOf="@id/duration" />
 
             <TextView
@@ -186,7 +175,6 @@
                 android:text="@string/year"
                 app:layout_constraintBottom_toTopOf="@id/genre"
                 app:layout_constraintEnd_toStartOf="@id/changeable_year"
-                app:layout_constraintStart_toStartOf="@id/album"
                 app:layout_constraintTop_toBottomOf="@id/album" />
 
             <TextView
@@ -202,7 +190,6 @@
                 android:text="@string/genre"
                 app:layout_constraintBottom_toTopOf="@id/country"
                 app:layout_constraintEnd_toStartOf="@id/changeable_genre"
-                app:layout_constraintStart_toStartOf="@id/year"
                 app:layout_constraintTop_toBottomOf="@id/year" />
 
             <TextView
@@ -219,7 +206,6 @@
                 android:text="@string/country"
                 app:layout_constraintBottom_toBottomOf="@id/bottom_guideline"
                 app:layout_constraintEnd_toStartOf="@id/changeable_country"
-                app:layout_constraintStart_toStartOf="@id/genre"
                 app:layout_constraintTop_toBottomOf="@id/genre" />
 
             <TextView

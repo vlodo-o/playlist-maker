@@ -55,7 +55,6 @@ class PlayerActivity : AppCompatActivity() {
         playButton = findViewById(R.id.play_button)
         favoriteButton = findViewById(R.id.favorite_button)
 
-        setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener {
             finish()
         }
@@ -67,15 +66,15 @@ class PlayerActivity : AppCompatActivity() {
 
         trackNameTextView.text = track.trackName
         trackArtistTextView.text = track.artistName
-        //trackTimeCountTextView.text = "0:00"
         trackDurationTextView.text = track.trackTime
         if (track.collectionName.isNotEmpty()) {
             trackAlbumTextView.text = track.collectionName
         } else {
-            //trackAlbumTextView.visibility = View.GONE
-            //trackAlbumText.visibility = View.GONE
+            trackAlbumTextView.visibility = View.GONE
+            trackAlbumText.visibility = View.GONE
         }
-        trackYearTextView.text = track.releaseDate
+        trackGenreTextView.text = track.primaryGenreName
+        trackYearTextView.text = track.releaseYear
         trackCountryTextView.text = track.country
     }
 

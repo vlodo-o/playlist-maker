@@ -38,7 +38,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackListRecyclerView: RecyclerView
     private lateinit var trackHistoryRecyclerView: RecyclerView
     private val trackListAdapter = TrackListAdapter { trackClickListener(it) }
-    private val trackHistoryAdapter = TrackListAdapter()
+    private val trackHistoryAdapter = TrackListAdapter { trackClickListener(it) }
 
     private lateinit var searchHistory: SearchHistory
 

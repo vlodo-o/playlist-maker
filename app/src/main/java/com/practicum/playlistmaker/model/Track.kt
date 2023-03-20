@@ -18,6 +18,10 @@ data class Track (
     val trackTime:String
         get() = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTimeMillis)
 
+    val releaseYear:String
+        get() = releaseDate.substringBefore("-")
+
     fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
+
 
 }
