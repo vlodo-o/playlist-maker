@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.practicum.playlistmaker">
+    package="com.practicum.playlistmaker" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".App"
@@ -15,22 +15,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PlaylistMaker"
-        tools:targetApi="31">
+        tools:targetApi="31" >
         <activity
-            android:name=".MedialibActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".activities.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".SearchActivity"
-            android:parentActivityName=".MainActivity"
-            android:exported="false" />
+            android:name=".activities.MedialibActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity"
-            android:exported="false" />
+            android:name=".activities.SearchActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".activities.SettingsActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.MainActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

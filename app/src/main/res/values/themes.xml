@@ -15,5 +15,7 @@
         <item name="android:fontFamily">@font/ys_display_medium</item>
 
         <item name="color">@color/yp_white</item>
+
+        <item name="floatingActionButtonColor">@color/gray_25_transparency</item>
     </style>
 </resources>
