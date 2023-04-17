@@ -3,6 +3,8 @@ package com.practicum.playlistmaker.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -28,20 +30,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
+    private val handler = Handler(Looper.getMainLooper())
+    private var isClickAllowed = true
+    private val searchRunnable = Runnable { searchTracks(searchText) }
+
     private lateinit var toolbar: Toolbar
 
     private lateinit var searchEditText: EditText
     private var searchText = ""
-
     private lateinit var clearButton: ImageView
 
     private lateinit var trackListRecyclerView: RecyclerView
     private lateinit var trackHistoryRecyclerView: RecyclerView
-    private val trackListAdapter = TrackListAdapter { trackClickListener(it) }
-    private val trackHistoryAdapter = TrackListAdapter { trackClickListener(it) }
+    private val trackListAdapter = TrackListAdapter { if (clickDebounce()) { trackClickListener(it) } }
+    private val trackHistoryAdapter = TrackListAdapter { if (clickDebounce()) { trackClickListener(it) } }
 
     private lateinit var searchHistory: SearchHistory
-
     private lateinit var historyLayout: LinearLayout
     private lateinit var clearHistoryButton: Button
 
@@ -108,6 +112,7 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.visibility = clearButtonVisibility(s)
                 searchText = s.toString()
                 historyLayout.visibility = if (searchEditText.hasFocus() && s?.isEmpty() == true && trackHistoryAdapter.trackList.isNotEmpty()) View.VISIBLE else View.GONE
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -215,10 +220,24 @@ class SearchActivity : AppCompatActivity() {
             }}
     }
 
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
     private fun trackClickListener(track: Track) {
         trackHistoryAdapter.setTracks(searchHistory.putTrack(track))
         val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK, Gson().toJson(track))
         startActivity(intent)
+    }
+
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -249,5 +268,7 @@ class SearchActivity : AppCompatActivity() {
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val LIST_VISIBILITY = "LIST_VISIBILITY"
         const val SEARCH_TRACK_HISTORY = "SEARCH_TRACK_HISTORY"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
