@@ -12,7 +12,8 @@ data class Track (
     val collectionName: String,     // Альбом
     val releaseDate: String,        // Год релиза трека
     val primaryGenreName: String,   // Жанр трека
-    val country: String             // Страна (стора?)
+    val country: String,            // Страна (стора?)
+    val previewUrl: String
 )
 {
     val trackTime:String
@@ -22,6 +23,5 @@ data class Track (
         get() = releaseDate.substringBefore("-")
 
     fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
-
 
 }
