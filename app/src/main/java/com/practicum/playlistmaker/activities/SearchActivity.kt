@@ -36,6 +36,8 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var toolbar: Toolbar
 
+    private lateinit var progressBar: ProgressBar
+
     private lateinit var searchEditText: EditText
     private var searchText = ""
     private lateinit var clearButton: ImageView
@@ -91,6 +93,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initViews() {
         toolbar = findViewById(R.id.toolbar)
+        progressBar = findViewById(R.id.progress_bar)
         clearButton = findViewById(R.id.clear_text_button)
         searchEditText = findViewById(R.id.search_edit_text)
         trackListRecyclerView = findViewById(R.id.track_list_recycler_view)
@@ -140,7 +143,10 @@ class SearchActivity : AppCompatActivity() {
     private fun clearButtonListener() {
         clearButton.setOnClickListener {
             searchEditText.text?.clear()
-            trackListRecyclerView.visibility = View.VISIBLE
+            trackListRecyclerView.visibility = View.GONE
+            errorImage.visibility = View.GONE
+            errorTextView.visibility = View.GONE
+            refreshButton.visibility = View.GONE
             trackListAdapter.setTracks(null)
 
             val view = this.currentFocus
@@ -174,34 +180,38 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTracks(query: String) {
-        iTunesSearch.getTrack(query).enqueue(object : Callback<TracksResponse> {
-            override fun onResponse(call: Call<TracksResponse>,
-                                    response: Response<TracksResponse>
-            ) {
-                when (response.code()) {
-                    200 -> {
-                        if (response.body()?.tracks?.isNotEmpty() == true) {
-                            trackListAdapter.setTracks(response.body()?.tracks!!)
-                            showSearchResult(SearchStatus.SUCCESS)
+        if (query.isNotEmpty()) {
+            historyLayout.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
+            iTunesSearch.getTrack(query).enqueue(object : Callback<TracksResponse> {
+                override fun onResponse(
+                    call: Call<TracksResponse>,
+                    response: Response<TracksResponse>
+                ) {
+                    when (response.code()) {
+                        200 -> {
+                            if (response.body()?.tracks?.isNotEmpty() == true) {
+                                trackListAdapter.setTracks(response.body()?.tracks!!)
+                                showSearchResult(SearchStatus.SUCCESS)
+                            } else {
+                                showSearchResult(SearchStatus.EMPTY_SEARCH)
+                            }
                         }
-                        else {
-                            showSearchResult(SearchStatus.EMPTY_SEARCH)
-                        }
+                        else ->
+                            showSearchResult(SearchStatus.CONNECTION_ERROR)
                     }
-                    else ->
-                        showSearchResult(SearchStatus.CONNECTION_ERROR)
                 }
-            }
 
-            override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                showSearchResult(SearchStatus.CONNECTION_ERROR)
-            }
+                override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
+                    showSearchResult(SearchStatus.CONNECTION_ERROR)
+                }
 
-        })
+            })
+        }
     }
 
     private fun showSearchResult(status: SearchStatus) {
-        historyLayout.visibility = View.GONE
+        progressBar.visibility = View.GONE
         when(status) {
             SearchStatus.SUCCESS -> {
                 trackListRecyclerView.visibility = View.VISIBLE
@@ -209,6 +219,8 @@ class SearchActivity : AppCompatActivity() {
             SearchStatus.EMPTY_SEARCH -> {
                 trackListRecyclerView.visibility = View.GONE
                 refreshButton.visibility = View.GONE
+                errorImage.visibility = View.VISIBLE
+                errorTextView.visibility = View.VISIBLE
                 errorImage.setImageResource(R.drawable.ic_not_found)
                 errorTextView.text = getString(R.string.not_found)
             }
