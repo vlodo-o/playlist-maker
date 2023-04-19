@@ -3,6 +3,8 @@ package com.practicum.playlistmaker.activities
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,6 +15,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.model.Track
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -35,6 +39,8 @@ class PlayerActivity : AppCompatActivity() {
 
     private var mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
+    private var mainThreadHandler = Handler(Looper.getMainLooper())
+    private val playerTimerRunnable = updateTimer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +57,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        mainThreadHandler.removeCallbacks(playerTimerRunnable)
         mediaPlayer.release()
     }
 
@@ -100,13 +107,17 @@ class PlayerActivity : AppCompatActivity() {
     private fun preparePlayer() {
         mediaPlayer.setDataSource(track.previewUrl)
         mediaPlayer.prepareAsync()
+
         mediaPlayer.setOnPreparedListener {
             playButton.isEnabled = true
             playerState = STATE_PREPARED
         }
+        // Изменение кнопки и сброс таймера по завершении воспроизведения
         mediaPlayer.setOnCompletionListener {
             playButton.setImageResource(R.drawable.ic_play)
             playerState = STATE_PREPARED
+            mainThreadHandler.removeCallbacks(playerTimerRunnable)
+            trackTimeCountTextView.text = getString(R.string.zero_time)
         }
     }
 
@@ -114,12 +125,14 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.start()
         playButton.setImageResource(R.drawable.ic_pause)
         playerState = STATE_PLAYING
+        mainThreadHandler.postDelayed(playerTimerRunnable, DELAY)
     }
 
     private fun pausePlayer() {
         mediaPlayer.pause()
         playButton.setImageResource(R.drawable.ic_play)
         playerState = STATE_PAUSED
+        mainThreadHandler.removeCallbacks(playerTimerRunnable)
     }
 
     private fun playbackControl() {
@@ -133,11 +146,22 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateTimer(): Runnable {
+        return object: Runnable {
+            override fun run() {
+                // Вывод позиции воспроизведения в медиаплеере
+                trackTimeCountTextView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+                mainThreadHandler.postDelayed(this, DELAY)
+            }
+        }
+    }
+
     companion object {
         const val TRACK = "TRACK"
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
+        private const val DELAY = 300L
     }
 }
