@@ -180,6 +180,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTracks(query: String) {
+        trackListRecyclerView.visibility = View.GONE
+        errorImage.visibility = View.GONE
+        errorTextView.visibility = View.GONE
+        refreshButton.visibility = View.GONE
         if (query.isNotEmpty()) {
             historyLayout.visibility = View.GONE
             progressBar.visibility = View.VISIBLE
