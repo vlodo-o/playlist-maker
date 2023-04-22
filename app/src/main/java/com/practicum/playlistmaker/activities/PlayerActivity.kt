@@ -125,7 +125,7 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.start()
         playButton.setImageResource(R.drawable.ic_pause)
         playerState = STATE_PLAYING
-        mainThreadHandler.postDelayed(playerTimerRunnable, DELAY)
+        mainThreadHandler.postDelayed(playerTimerRunnable, DURATION_UPDATE_DELAY_MS)
     }
 
     private fun pausePlayer() {
@@ -151,7 +151,7 @@ class PlayerActivity : AppCompatActivity() {
             override fun run() {
                 // Вывод позиции воспроизведения в медиаплеере
                 trackTimeCountTextView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-                mainThreadHandler.postDelayed(this, DELAY)
+                mainThreadHandler.postDelayed(this, DURATION_UPDATE_DELAY_MS)
             }
         }
     }
@@ -162,6 +162,6 @@ class PlayerActivity : AppCompatActivity() {
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
-        private const val DELAY = 300L
+        private const val DURATION_UPDATE_DELAY_MS = 300L
     }
 }

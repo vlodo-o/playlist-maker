@@ -44,8 +44,8 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var trackListRecyclerView: RecyclerView
     private lateinit var trackHistoryRecyclerView: RecyclerView
-    private val trackListAdapter = TrackListAdapter { if (clickDebounce()) { trackClickListener(it) } }
-    private val trackHistoryAdapter = TrackListAdapter { if (clickDebounce()) { trackClickListener(it) } }
+    private val trackListAdapter = TrackListAdapter { trackClickListener(it) }
+    private val trackHistoryAdapter = TrackListAdapter { trackClickListener(it) }
 
     private lateinit var searchHistory: SearchHistory
     private lateinit var historyLayout: LinearLayout
@@ -242,9 +242,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun trackClickListener(track: Track) {
-        trackHistoryAdapter.setTracks(searchHistory.putTrack(track))
-        val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK, Gson().toJson(track))
-        startActivity(intent)
+        if (clickDebounce()) {
+            trackHistoryAdapter.setTracks(searchHistory.putTrack(track))
+            val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK,
+                Gson().toJson(track))
+            startActivity(intent)
+        }
     }
 
     private fun clickDebounce() : Boolean {
