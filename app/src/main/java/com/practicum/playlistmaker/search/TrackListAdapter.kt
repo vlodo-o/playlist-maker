@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.adapter
+package com.practicum.playlistmaker.search
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.model.Track
+import com.practicum.playlistmaker.player.domain.models.Track
 
 class TrackListAdapter(
     private val clickListener: TrackClickListener? = null

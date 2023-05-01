@@ -2,7 +2,7 @@ package com.practicum.playlistmaker
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.practicum.playlistmaker.model.Track
+import com.practicum.playlistmaker.player.domain.models.Track
 
 const val TRACK_SEARCH_HISTORY = "TRACK_SEARCH_HISTORY"
 
