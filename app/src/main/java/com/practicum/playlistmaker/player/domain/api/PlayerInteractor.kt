@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.player
+package com.practicum.playlistmaker.player.domain.api
 
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 

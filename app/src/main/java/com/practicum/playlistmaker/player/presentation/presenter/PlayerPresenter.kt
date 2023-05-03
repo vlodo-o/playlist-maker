@@ -1,10 +1,9 @@
 package com.practicum.playlistmaker.player.presentation.presenter
 
-import com.practicum.playlistmaker.player.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 import com.practicum.playlistmaker.player.presentation.PlayTimer
 import com.practicum.playlistmaker.player.presentation.PlayerView
-import java.util.*
 
 class PlayerPresenter (
     private var view: PlayerView?,

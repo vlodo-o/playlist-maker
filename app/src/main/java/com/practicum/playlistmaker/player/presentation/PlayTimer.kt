@@ -2,7 +2,7 @@ package com.practicum.playlistmaker.player.presentation
 
 import android.os.Handler
 import android.os.Looper
-import com.practicum.playlistmaker.player.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import java.text.SimpleDateFormat
 import java.util.*
 

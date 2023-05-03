@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.player.domain.impl
 
-import com.practicum.playlistmaker.player.PlayerInteractor
+import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.api.TrackPlayer
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 
