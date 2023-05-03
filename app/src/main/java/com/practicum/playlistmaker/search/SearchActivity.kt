@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.activities
+package com.practicum.playlistmaker.search
 
 import android.content.Context
 import android.content.Intent
@@ -18,10 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.SearchHistory
-import com.practicum.playlistmaker.adapter.TrackListAdapter
-import com.practicum.playlistmaker.api.ITunesSearchApi
-import com.practicum.playlistmaker.api.TracksResponse
-import com.practicum.playlistmaker.model.Track
+import com.practicum.playlistmaker.player.domain.models.Track
+import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

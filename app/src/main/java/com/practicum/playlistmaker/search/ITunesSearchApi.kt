@@ -1,9 +1,8 @@
-package com.practicum.playlistmaker.api
+package com.practicum.playlistmaker.search
 
+import com.practicum.playlistmaker.search.TracksResponse
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ITunesSearchApi {

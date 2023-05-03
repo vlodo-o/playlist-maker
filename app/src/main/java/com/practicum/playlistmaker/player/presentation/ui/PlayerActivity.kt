@@ -1,10 +1,7 @@
-package com.practicum.playlistmaker.activities
+package com.practicum.playlistmaker.player.presentation.ui
 
-import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,11 +11,13 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.model.Track
-import java.text.SimpleDateFormat
+import com.practicum.playlistmaker.player.creator.Creator
+import com.practicum.playlistmaker.player.domain.models.Track
+import com.practicum.playlistmaker.player.presentation.PlayerView
+import com.practicum.playlistmaker.player.presentation.presenter.PlayerPresenter
 import java.util.*
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity(), PlayerView {
 
     private lateinit var toolbar: Toolbar
     private lateinit var coverImageView: ImageView
@@ -26,6 +25,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var trackArtistTextView: TextView
     private lateinit var trackTimeCountTextView: TextView
     private lateinit var trackDurationTextView: TextView
+    private lateinit var trackAlbumText: TextView
     private lateinit var trackAlbumTextView: TextView
     private lateinit var trackYearTextView: TextView
     private lateinit var trackGenreTextView: TextView
@@ -37,28 +37,29 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var track: Track
 
-    private var mediaPlayer = MediaPlayer()
-    private var playerState = STATE_DEFAULT
-    private var mainThreadHandler = Handler(Looper.getMainLooper())
-    private val playerTimerRunnable = updateTimer()
+    private lateinit var presenter: PlayerPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
         track = Gson().fromJson((intent.getStringExtra(TRACK)), Track::class.java)
         initViews()
-        preparePlayer()
+        setTrackInfo()
+        presenter = Creator.providePresenter(
+            view = this,
+            track = track
+        )
+        initListeners()
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        presenter.onViewPaused()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mainThreadHandler.removeCallbacks(playerTimerRunnable)
-        mediaPlayer.release()
+        presenter.onViewDestroyed()
     }
 
     private fun initViews() {
@@ -68,7 +69,7 @@ class PlayerActivity : AppCompatActivity() {
         trackArtistTextView = findViewById(R.id.track_artist_textview)
         trackTimeCountTextView = findViewById(R.id.time_count)
         trackDurationTextView = findViewById(R.id.changeable_duration)
-        val trackAlbumText: TextView = findViewById(R.id.album)
+        trackAlbumText = findViewById(R.id.album)
         trackAlbumTextView = findViewById(R.id.changeable_album)
         trackYearTextView = findViewById(R.id.changeable_year)
         trackGenreTextView = findViewById(R.id.changeable_genre)
@@ -76,11 +77,19 @@ class PlayerActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.save_button)
         playButton = findViewById(R.id.play_button)
         favoriteButton = findViewById(R.id.favorite_button)
+    }
 
+    private fun initListeners() {
         toolbar.setNavigationOnClickListener {
             finish()
         }
 
+        playButton.setOnClickListener {
+            presenter.playbackControl()
+        }
+    }
+
+    private fun setTrackInfo() {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.full_track_cover_radius)
         Glide.with(this).load(track.getCoverArtwork())
             .placeholder(R.drawable.track_placeholder).centerCrop()
@@ -98,70 +107,41 @@ class PlayerActivity : AppCompatActivity() {
         trackGenreTextView.text = track.primaryGenreName
         trackYearTextView.text = track.releaseYear
         trackCountryTextView.text = track.country
-
-        playButton.setOnClickListener {
-            playbackControl()
-        }
     }
 
-    private fun preparePlayer() {
-        mediaPlayer.setDataSource(track.previewUrl)
-        mediaPlayer.prepareAsync()
+    override fun drawTrack(track: Track) {
+        val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.full_track_cover_radius)
+        Glide.with(this).load(track.getCoverArtwork())
+            .placeholder(R.drawable.track_placeholder).centerCrop()
+            .transform(RoundedCorners(cornerRadius)).into(coverImageView)
 
-        mediaPlayer.setOnPreparedListener {
-            playButton.isEnabled = true
-            playerState = STATE_PREPARED
+        trackNameTextView.text = track.trackName
+        trackArtistTextView.text = track.artistName
+        trackDurationTextView.text = track.trackTime
+        if (track.collectionName.isNotEmpty()) {
+            trackAlbumTextView.text = track.collectionName
+        } else {
+            trackAlbumTextView.visibility = View.GONE
+            trackAlbumText.visibility = View.GONE
         }
-        // Изменение кнопки и сброс таймера по завершении воспроизведения
-        mediaPlayer.setOnCompletionListener {
-            playButton.setImageResource(R.drawable.ic_play)
-            playerState = STATE_PREPARED
-            mainThreadHandler.removeCallbacks(playerTimerRunnable)
-            trackTimeCountTextView.text = getString(R.string.zero_time)
-        }
+        trackGenreTextView.text = track.primaryGenreName
+        trackYearTextView.text = track.releaseYear
+        trackCountryTextView.text = track.country
     }
 
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playButton.setImageResource(R.drawable.ic_pause)
-        playerState = STATE_PLAYING
-        mainThreadHandler.postDelayed(playerTimerRunnable, DURATION_UPDATE_DELAY_MS)
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
+    override fun setPlayIcon() {
         playButton.setImageResource(R.drawable.ic_play)
-        playerState = STATE_PAUSED
-        mainThreadHandler.removeCallbacks(playerTimerRunnable)
     }
 
-    private fun playbackControl() {
-        when(playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
+    override fun setPauseIcon() {
+        playButton.setImageResource(R.drawable.ic_pause)
     }
 
-    private fun updateTimer(): Runnable {
-        return object: Runnable {
-            override fun run() {
-                // Вывод позиции воспроизведения в медиаплеере
-                trackTimeCountTextView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-                mainThreadHandler.postDelayed(this, DURATION_UPDATE_DELAY_MS)
-            }
-        }
+    override fun setDuration(ms: String) {
+        trackTimeCountTextView.text = ms
     }
 
     companion object {
         const val TRACK = "TRACK"
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val DURATION_UPDATE_DELAY_MS = 300L
     }
 }
