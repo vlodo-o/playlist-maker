@@ -7,18 +7,22 @@ import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitNetworkClient: NetworkClient {
+class RetrofitNetworkClient : NetworkClient {
 
-    val api = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com")
+    private val api = Retrofit.Builder()
+        .baseUrl(baseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build().create(ITunesSearchApi::class.java)
 
-    override fun doRequest(query: String, onSuccess: (List<Track>) -> Unit, onError: (NetworkError) -> Unit) {
+    override fun doRequest(
+        query: String,
+        onSuccess: (List<Track>) -> Unit,
+        onError: (NetworkError) -> Unit,
+    ) {
         api.getTrack(query).enqueue(object : Callback<TracksResponse> {
             override fun onResponse(
                 call: Call<TracksResponse>,
-                response: retrofit2.Response<TracksResponse>
+                response: retrofit2.Response<TracksResponse>,
             ) {
                 when (response.code()) {
                     200 -> {
@@ -37,6 +41,10 @@ class RetrofitNetworkClient: NetworkClient {
                 onError.invoke(NetworkError.CONNECTION_ERROR)
             }
         })
+    }
+
+    companion object {
+        const val baseUrl = "https://itunes.apple.com"
     }
 
 }

@@ -10,11 +10,11 @@ import com.practicum.playlistmaker.settings.domain.SettingsInteractor
 import com.practicum.playlistmaker.settings.domain.model.ThemeSettings
 import com.practicum.playlistmaker.sharing.domain.SharingInteractor
 
-class SettingsViewModel (
+class SettingsViewModel(
     private val settingsInteractor: SettingsInteractor,
     private val sharingInteractor: SharingInteractor,
-    private val application: App
-        ): AndroidViewModel(application) {
+    private val application: App,
+) : AndroidViewModel(application) {
 
     private val _themeSettingsState = MutableLiveData<ThemeSettings>()
     val themeSettingsState: LiveData<ThemeSettings> = _themeSettingsState
@@ -47,7 +47,8 @@ class SettingsViewModel (
         fun getViewModelFactory(context: Context): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
-                    val application = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as App
+                    val application =
+                        this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as App
                     SettingsViewModel(
                         Creator.provideSettingsInteractor(context),
                         Creator.provideSharingInteractor(context),

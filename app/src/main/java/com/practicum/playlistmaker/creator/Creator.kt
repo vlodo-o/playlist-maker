@@ -24,7 +24,8 @@ object Creator {
 
     fun provideSettingsInteractor(context: Context): SettingsInteractor {
         val sharedPrefs = context.getSharedPreferences(SharedPrefsThemeStorage.DARK_THEME, Context.MODE_PRIVATE)
-        return SettingsInteractorImpl(SettingsRepositoryImpl(SharedPrefsThemeStorage(sharedPrefs)))
+        val repository = SettingsRepositoryImpl(SharedPrefsThemeStorage(sharedPrefs))
+        return SettingsInteractorImpl(repository)
     }
 
     fun provideSharingInteractor(context: Context): SharingInteractor {

@@ -29,7 +29,6 @@ class SettingsActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
-
         viewModel.themeSettingsState.observe(this) { themeSettings ->
             themeSwitch.isChecked = themeSettings.darkTheme
         }

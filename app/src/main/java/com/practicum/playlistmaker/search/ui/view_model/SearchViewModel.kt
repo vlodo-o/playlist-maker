@@ -12,9 +12,9 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.domain.SearchInteractor
 import com.practicum.playlistmaker.search.ui.models.SearchViewState
 
-class SearchViewModel (
-    private val searchInteractor: SearchInteractor
-): ViewModel(){
+class SearchViewModel(
+    private val searchInteractor: SearchInteractor,
+) : ViewModel() {
 
     private val historyList = ArrayList<Track>()
 
@@ -58,7 +58,7 @@ class SearchViewModel (
     fun addTrackToHistory(track: Track) {
         if (historyList.contains(track)) {
             historyList.removeAt(historyList.indexOf(track))
-        } else if (historyList.size == 10) {
+        } else if (historyList.size == maxHistorySize) {
             historyList.removeAt(0)
         }
         historyList.add(track)
@@ -72,6 +72,9 @@ class SearchViewModel (
     }
 
     companion object {
+
+        private const val maxHistorySize = 10
+
         fun getViewModelFactory(context: Context): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
