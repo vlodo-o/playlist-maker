@@ -17,22 +17,22 @@
         android:theme="@style/Theme.PlaylistMaker"
         tools:targetApi="31" >
         <activity
-            android:name=".player.presentation.ui.PlayerActivity"
+            android:name="com.practicum.playlistmaker.player.ui.activity.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".MedialibActivity"
+            android:name=".medialib.MedialibActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".main.ui.activity.MainActivity" />
         <activity
-            android:name=".search.SearchActivity"
+            android:name=".search.ui.activity.SearchActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".main.ui.activity.MainActivity" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".settings.ui.activity.SettingsActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".main.ui.activity.MainActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".main.ui.activity.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
