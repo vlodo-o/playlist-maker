@@ -4,9 +4,6 @@ import android.content.Context
 import com.practicum.playlistmaker.player.data.TrackPlayerImpl
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.impl.PlayerInteractorImpl
-import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.player.ui.PlayerView
-import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.data.storage.SharedPrefsHistoryStorage
 import com.practicum.playlistmaker.search.data.impl.SearchRepositoryImpl
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient

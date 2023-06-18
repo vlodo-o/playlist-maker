@@ -23,7 +23,7 @@ class SearchViewModel(
 
     init {
         historyList.addAll(searchInteractor.getHistory())
-        _stateLiveData.postValue(SearchViewState.SearchHistory(historyList))
+        _stateLiveData.value = SearchViewState.SearchHistory(historyList)
     }
 
     override fun onCleared() {
@@ -34,31 +34,31 @@ class SearchViewModel(
     fun searchTracks(query: String) {
         if (query.isEmpty()) return
 
-        _stateLiveData.postValue(SearchViewState.Loading)
+        _stateLiveData.value = SearchViewState.Loading
 
         searchInteractor.searchTracks(query,
             onSuccess = { trackList ->
-                _stateLiveData.postValue(SearchViewState.SearchedTracks(trackList))
+                _stateLiveData.value = SearchViewState.SearchedTracks(trackList)
             },
             onError = { error ->
-                _stateLiveData.postValue(SearchViewState.SearchError(error))
+                _stateLiveData.value = SearchViewState.SearchError(error)
             }
         )
     }
 
     fun clearHistory() {
         historyList.clear()
-        _stateLiveData.postValue(SearchViewState.SearchHistory(historyList))
+        _stateLiveData.value = SearchViewState.SearchHistory(historyList)
     }
 
     fun clearSearchText() {
-        _stateLiveData.postValue(SearchViewState.SearchHistory(historyList))
+        _stateLiveData.value = SearchViewState.SearchHistory(historyList)
     }
 
     fun addTrackToHistory(track: Track) {
         if (historyList.contains(track)) {
             historyList.removeAt(historyList.indexOf(track))
-        } else if (historyList.size == maxHistorySize) {
+        } else if (historyList.size == MAX_HISTORY_SIZE) {
             historyList.removeAt(0)
         }
         historyList.add(track)
@@ -67,13 +67,13 @@ class SearchViewModel(
 
     fun searchFocusChanged(hasFocus: Boolean, text: String) {
         if (hasFocus && text.isEmpty()) {
-            _stateLiveData.postValue(SearchViewState.SearchHistory(historyList))
+            _stateLiveData.value = SearchViewState.SearchHistory(historyList)
         }
     }
 
     companion object {
 
-        private const val maxHistorySize = 10
+        private const val MAX_HISTORY_SIZE = 10
 
         fun getViewModelFactory(context: Context): ViewModelProvider.Factory =
             viewModelFactory {

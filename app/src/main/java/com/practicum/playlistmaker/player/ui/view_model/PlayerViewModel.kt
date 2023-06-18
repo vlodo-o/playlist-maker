@@ -23,21 +23,21 @@ class PlayerViewModel (private val interactor: PlayerInteractor): ViewModel() {
     init {
         interactor.preparePlayer()
         interactor.setTrackCompletionListener {
-            _playState.postValue(false)
+            _playState.value = false
             playTimer.pauseTimer()
-            _playProgress.postValue("00:00")
+            _playProgress.value = TIMER_START
         }
     }
 
     private fun startPlayer() {
         interactor.startPlayer()
-        _playState.postValue(true)
+        _playState.value = true
         playTimer.startTimer()
     }
 
     fun pausePlayer() {
         interactor.pausePlayer()
-        _playState.postValue(false)
+        _playState.value = false
         playTimer.pauseTimer()
     }
 
@@ -57,6 +57,8 @@ class PlayerViewModel (private val interactor: PlayerInteractor): ViewModel() {
     }
 
     companion object {
+
+        const val TIMER_START = "00:00"
 
         fun getViewModelFactory(trackUrl: String): ViewModelProvider.Factory =
             viewModelFactory {

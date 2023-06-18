@@ -14,15 +14,15 @@ class MainViewModel: ViewModel() {
     val navigationLiveData: LiveData<NavigationState> = _navigationLiveData
 
     fun openSearchScreen() {
-        _navigationLiveData.postValue(NavigationState.SearchScreen)
+        _navigationLiveData.value = NavigationState.SearchScreen
     }
 
     fun openMedialibScreen() {
-        _navigationLiveData.postValue(NavigationState.MedialibScreen)
+        _navigationLiveData.value = NavigationState.MedialibScreen
     }
 
     fun openSettingsScreen() {
-        _navigationLiveData.postValue(NavigationState.SettingsScreen)
+        _navigationLiveData.value = NavigationState.SettingsScreen
     }
 
     companion object {
