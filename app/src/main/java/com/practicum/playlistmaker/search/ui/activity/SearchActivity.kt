@@ -235,9 +235,10 @@ class SearchActivity : AppCompatActivity() {
 
     private fun trackClickListener(track: Track) {
         if (clickDebounce()) {
-            viewModel.addTrackToHistory(track)
-            val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK,
-                Gson().toJson(track))
+            viewModel.addTrackToHistory(track) 
+                //val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK,
+                //Gson().toJson(track))
+            val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK, track)
             startActivity(intent)
         }
     }

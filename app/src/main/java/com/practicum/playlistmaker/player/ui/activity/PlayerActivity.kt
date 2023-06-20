@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.player.ui.activity
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -9,7 +10,6 @@ import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
@@ -40,7 +40,15 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
-        track = Gson().fromJson((intent.getStringExtra(TRACK)), Track::class.java)
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            track = intent.getParcelableExtra(TRACK, Track::class.java)!!
+        }
+        else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra<Track>(TRACK)
+        }
+
         initViews()
         initListeners()
         setTrackInfo()
