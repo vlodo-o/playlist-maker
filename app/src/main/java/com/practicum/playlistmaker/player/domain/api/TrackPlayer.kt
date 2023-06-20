@@ -4,10 +4,10 @@ import com.practicum.playlistmaker.player.domain.models.PlayerState
 
 interface TrackPlayer {
     var playerState: PlayerState
-    var completionListener: () -> Unit
-    fun prepare()
-    fun start()
+    fun prepare(trackUrl: String)
+    fun start(trackUrl: String)
     fun pause()
     fun release()
     fun getCurrentPosition(): Int
+    fun setOnCompletionListener(listener: () -> Unit)
 }

@@ -6,11 +6,12 @@ import com.practicum.playlistmaker.player.domain.models.PlayerState
 
 class PlayerInteractorImpl(private val trackPlayer: TrackPlayer): PlayerInteractor {
 
-    override fun preparePlayer() {
-        trackPlayer.prepare()
+    override fun preparePlayer(trackUrl: String) {
+        trackPlayer.prepare(trackUrl)
     }
-    override fun startPlayer() {
-        trackPlayer.start()
+
+    override fun startPlayer(trackUrl: String) {
+        trackPlayer.start(trackUrl)
     }
 
     override fun pausePlayer() {
@@ -30,7 +31,7 @@ class PlayerInteractorImpl(private val trackPlayer: TrackPlayer): PlayerInteract
     }
 
     override fun setTrackCompletionListener(listener: (() -> Unit)) {
-        trackPlayer.completionListener = listener
+        trackPlayer.setOnCompletionListener(listener)
     }
 
 }
