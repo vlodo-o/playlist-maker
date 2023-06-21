@@ -1,19 +1,19 @@
 package com.practicum.playlistmaker.player.ui.activity
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -35,17 +35,24 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var track: Track
 
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel by viewModel<PlayerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
-        track = Gson().fromJson((intent.getStringExtra(TRACK)), Track::class.java)
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            track = intent.getParcelableExtra(TRACK, Track::class.java)!!
+        }
+        else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra<Track>(TRACK)
+        }
+
         initViews()
         initListeners()
         setTrackInfo()
 
-        viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory(track.previewUrl))[PlayerViewModel::class.java]
         viewModel.playState.observe(this) { playState ->
             if (playState) {
                 playButton.setImageResource(R.drawable.ic_pause)
@@ -62,6 +69,11 @@ class PlayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.stopPlayer()
     }
 
     private fun initViews() {
@@ -87,7 +99,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         playButton.setOnClickListener {
-            viewModel.playbackControl()
+            viewModel.playbackControl(track.previewUrl)
         }
     }
 

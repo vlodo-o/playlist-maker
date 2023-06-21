@@ -13,7 +13,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -23,6 +22,7 @@ import com.practicum.playlistmaker.player.ui.activity.PlayerActivity
 import com.practicum.playlistmaker.search.domain.models.NetworkError
 import com.practicum.playlistmaker.search.ui.models.SearchViewState
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
@@ -50,7 +50,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var errorImage: ImageView
     private lateinit var refreshButton: Button
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +68,6 @@ class SearchActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         searchEditText.requestFocus()
 
-        viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory(this))[SearchViewModel::class.java]
         viewModel.stateLiveData.observe(this) { state ->
             when(state) {
                 is SearchViewState.SearchHistory -> {
@@ -236,9 +235,10 @@ class SearchActivity : AppCompatActivity() {
 
     private fun trackClickListener(track: Track) {
         if (clickDebounce()) {
-            viewModel.addTrackToHistory(track)
-            val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK,
-                Gson().toJson(track))
+            viewModel.addTrackToHistory(track) 
+                //val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK,
+                //Gson().toJson(track))
+            val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK, track)
             startActivity(intent)
         }
     }

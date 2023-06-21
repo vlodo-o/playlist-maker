@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.settings.data.impl
 
-import com.practicum.playlistmaker.settings.data.SettingsRepository
+import com.practicum.playlistmaker.settings.domain.SettingsRepository
 import com.practicum.playlistmaker.settings.data.storage.SettingsThemeStorage
 import com.practicum.playlistmaker.settings.domain.model.ThemeSettings
 

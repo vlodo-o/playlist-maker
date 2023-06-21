@@ -3,10 +3,6 @@ package com.practicum.playlistmaker.player.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 import com.practicum.playlistmaker.player.ui.PlayTimer
@@ -20,17 +16,8 @@ class PlayerViewModel (private val interactor: PlayerInteractor): ViewModel() {
     private val _playProgress = MutableLiveData<String>()
     val playProgress: LiveData<String> = _playProgress
 
-    init {
-        interactor.preparePlayer()
-        interactor.setTrackCompletionListener {
-            _playState.value = false
-            playTimer.pauseTimer()
-            _playProgress.value = TIMER_START
-        }
-    }
-
-    private fun startPlayer() {
-        interactor.startPlayer()
+    private fun startPlayer(trackUrl: String) {
+        interactor.startPlayer(trackUrl)
         _playState.value = true
         playTimer.startTimer()
     }
@@ -41,33 +28,32 @@ class PlayerViewModel (private val interactor: PlayerInteractor): ViewModel() {
         playTimer.pauseTimer()
     }
 
-    fun playbackControl() {
+    fun stopPlayer() {
+        interactor.stopPlayer()
+
+    }
+
+    fun playbackControl(trackUrl: String) {
         when(interactor.getPlayerState()) {
             PlayerState.PLAYING -> {
                 pausePlayer()
             }
             PlayerState.PREPARED, PlayerState.PAUSED -> {
-                startPlayer()
+                startPlayer(trackUrl)
             }
             PlayerState.DEFAULT -> {
-                interactor.preparePlayer()
-                startPlayer()
+                startPlayer(trackUrl)
+                interactor.setTrackCompletionListener {
+                    _playState.value = false
+                    playTimer.pauseTimer()
+                    _playProgress.value = TIMER_START
+                }
             }
         }
     }
 
     companion object {
-
         const val TIMER_START = "00:00"
-
-        fun getViewModelFactory(trackUrl: String): ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-                    PlayerViewModel(
-                        Creator.providePlayerInteractor(trackUrl)
-                    )
-                }
-            }
     }
 
 }
