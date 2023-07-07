@@ -17,8 +17,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryVariant"
-        app:tabTextColor="?attr/colorOnPrimary"
-        app:tabIndicatorColor="?attr/colorOnPrimary"/>
+        app:tabIndicatorColor="?attr/colorOnPrimary"
+        app:tabPaddingEnd="@dimen/dimen_16dp"
+        app:tabPaddingStart="@dimen/dimen_16dp"
+        app:tabTextAppearance="@style/TabTextStyle"
+        app:tabTextColor="?attr/colorOnPrimary" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/medialib_view_pager"
