@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import com.practicum.playlistmaker.medialib.MedialibActivity
+import com.practicum.playlistmaker.medialib.ui.activity.MedialibActivity
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.main.ui.view_model.MainViewModel
 import com.practicum.playlistmaker.player.ui.models.NavigationState
