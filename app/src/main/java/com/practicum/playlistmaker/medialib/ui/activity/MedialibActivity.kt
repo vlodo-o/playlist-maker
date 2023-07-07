@@ -11,6 +11,7 @@ import com.practicum.playlistmaker.medialib.ui.MedialibPagerAdapter
 
 class MedialibActivity : AppCompatActivity() {
 
+    private lateinit var toolbar: Toolbar
     private lateinit var tabMediator: TabLayoutMediator
     private lateinit var medialibTabLayout: TabLayout
     private lateinit var medialibViewPager: ViewPager2
@@ -18,11 +19,8 @@ class MedialibActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_medialib)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        initViews()
         setSupportActionBar(toolbar)
-
-        medialibViewPager = findViewById(R.id.medialib_view_pager)
-        medialibTabLayout = findViewById(R.id.tab_layout)
 
         medialibViewPager.adapter = MedialibPagerAdapter(supportFragmentManager, lifecycle)
         tabMediator = TabLayoutMediator(medialibTabLayout, medialibViewPager) { tab, position ->
@@ -32,5 +30,11 @@ class MedialibActivity : AppCompatActivity() {
             }
         }
         tabMediator.attach()
+    }
+
+    private fun initViews() {
+        toolbar = findViewById(R.id.toolbar)
+        medialibViewPager = findViewById(R.id.medialib_view_pager)
+        medialibTabLayout = findViewById(R.id.tab_layout)
     }
 }
