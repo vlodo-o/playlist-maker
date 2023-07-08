@@ -124,8 +124,8 @@
 
         <ImageView
             android:id="@+id/error_image"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="@dimen/error_image_size"
+            android:layout_height="@dimen/error_image_size"
             android:layout_gravity="center"
             tools:srcCompat="@drawable/ic_network_error" />
 

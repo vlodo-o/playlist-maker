@@ -20,7 +20,7 @@
             android:name="com.practicum.playlistmaker.player.ui.activity.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".medialib.MedialibActivity"
+            android:name=".medialib.ui.activity.MedialibActivity"
             android:exported="false"
             android:parentActivityName=".main.ui.activity.MainActivity" />
         <activity
