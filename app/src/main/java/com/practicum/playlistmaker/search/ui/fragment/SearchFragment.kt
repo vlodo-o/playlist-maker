@@ -265,12 +265,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_TEXT, searchText)
-        outState.putInt(LIST_VISIBILITY, trackListRecyclerView.visibility)
-    }
-
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val LIST_VISIBILITY = "LIST_VISIBILITY"

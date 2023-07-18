@@ -3,6 +3,13 @@
 
     <style name="Toolbar">
         <item name="contentInsetStartWithNavigation">0dp</item>
+        <item name="theme">@style/ToolbarColoredBackArrow</item>
+        <item name="titleMarginStart">8dp</item>
+        <item name="titleTextAppearance">@style/ToolbarTextAppearance</item>
+    </style>
+
+    <style name="ToolbarWithArrow">
+        <item name="contentInsetStartWithNavigation">0dp</item>
         <item name="iconTint">?attr/colorOnPrimary</item>
         <item name="navigationIcon">?homeAsUpIndicator</item>
         <item name="theme">@style/ToolbarColoredBackArrow</item>
