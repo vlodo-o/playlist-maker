@@ -1,16 +1,21 @@
-package com.practicum.playlistmaker.settings.ui.activity
+package com.practicum.playlistmaker.settings.ui
 
-import com.practicum.playlistmaker.R
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
 
+    private lateinit var binding: FragmentSettingsBinding
     private lateinit var toolbar: Toolbar
     private lateinit var themeSwitch: SwitchMaterial
     private lateinit var shareButton: Button
@@ -18,27 +23,28 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var agreementButton: Button
     private val viewModel by viewModel<SettingsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_settings)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initViews()
         initListeners()
-
-        setSupportActionBar(toolbar)
-
-        viewModel.themeSettingsState.observe(this) { themeSettings ->
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        viewModel.themeSettingsState.observe(viewLifecycleOwner) { themeSettings ->
             themeSwitch.isChecked = themeSettings.darkTheme
         }
 
     }
 
     private fun initViews() {
-        toolbar = findViewById(R.id.toolbar)
-        themeSwitch = findViewById(R.id.theme_switch)
-        shareButton = findViewById(R.id.share_button)
-        supportButton = findViewById(R.id.support_button)
-        agreementButton = findViewById(R.id.agreement_button)
+        toolbar = binding.toolbar
+        themeSwitch = binding.themeSwitch
+        shareButton = binding.shareButton
+        supportButton = binding.supportButton
+        agreementButton = binding.agreementButton
     }
 
     private fun initListeners() {

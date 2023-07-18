@@ -18,7 +18,7 @@ class MedialibActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_medialib)
+        setContentView(R.layout.fragment_medialib)
         initViews()
         setSupportActionBar(toolbar)
 
