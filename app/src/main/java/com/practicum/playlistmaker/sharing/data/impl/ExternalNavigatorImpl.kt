@@ -22,7 +22,7 @@ class ExternalNavigatorImpl (private val context: Context) : ExternalNavigator {
     }
 
     override fun openLink(termsLink: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(termsLink))
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(termsLink)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(browserIntent)
     }
 
