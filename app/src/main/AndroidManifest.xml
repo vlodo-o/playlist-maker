@@ -27,21 +27,6 @@
         <activity
             android:name=".player.ui.activity.PlayerActivity"
             android:exported="false" />
-        <activity
-            android:name=".medialib.ui.activity.MedialibActivity"
-            android:exported="false"
-            android:parentActivityName=".main.ui.activity.MainActivity" />
-        <activity
-            android:name=".search.ui.activity.SearchActivity"
-            android:exported="false"
-            android:parentActivityName=".main.ui.activity.MainActivity" />
-        <activity
-            android:name=".settings.ui.activity.SettingsActivity"
-            android:exported="false"
-            android:parentActivityName=".main.ui.activity.MainActivity" />
-        <activity
-            android:name=".main.ui.activity.MainActivity"
-            android:exported="true"/>
     </application>
 
 </manifest>

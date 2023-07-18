@@ -16,9 +16,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.fragment.app.commit
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
@@ -26,11 +23,9 @@ import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.activity.PlayerActivity
 import com.practicum.playlistmaker.search.domain.models.NetworkError
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.activity.SearchActivity
 import com.practicum.playlistmaker.search.ui.activity.TrackListAdapter
 import com.practicum.playlistmaker.search.ui.models.SearchViewState
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
-import org.koin.androidx.scope.scopeActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
