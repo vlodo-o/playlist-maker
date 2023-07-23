@@ -3,6 +3,13 @@
 
     <style name="Toolbar">
         <item name="contentInsetStartWithNavigation">0dp</item>
+        <item name="theme">@style/ToolbarColoredBackArrow</item>
+        <item name="titleMarginStart">8dp</item>
+        <item name="titleTextAppearance">@style/ToolbarTextAppearance</item>
+    </style>
+
+    <style name="ToolbarWithArrow">
+        <item name="contentInsetStartWithNavigation">0dp</item>
         <item name="iconTint">?attr/colorOnPrimary</item>
         <item name="navigationIcon">?homeAsUpIndicator</item>
         <item name="theme">@style/ToolbarColoredBackArrow</item>
@@ -16,6 +23,14 @@
 
     <style name="ToolbarColoredBackArrow">
         <item name="android:textColorSecondary">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="BottomNavigation">
+        <item name="itemIconTint">@color/navigation_menu_color</item>
+        <item name="backgroundTint">?attr/colorPrimaryVariant</item>
+        <item name="itemTextColor">@color/navigation_menu_color</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
     </style>
 
     <style name="MenuButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">

@@ -17,12 +17,12 @@ class ExternalNavigatorImpl (private val context: Context) : ExternalNavigator {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, shareAppLink)
             type = "text/plain"
-            context.startActivity(Intent.createChooser(this, null))
+            context.startActivity(Intent.createChooser(this, null).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
     }
 
     override fun openLink(termsLink: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(termsLink))
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(termsLink)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(browserIntent)
     }
 
@@ -33,6 +33,7 @@ class ExternalNavigatorImpl (private val context: Context) : ExternalNavigator {
             putExtra(Intent.EXTRA_EMAIL, arrayOf(supportEmailData.mail))
             putExtra(Intent.EXTRA_SUBJECT, emailSubject)
             putExtra(Intent.EXTRA_TEXT, emailText)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(this)
         }
     }

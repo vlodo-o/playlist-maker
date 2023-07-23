@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.ui.activity
+package com.practicum.playlistmaker.search.ui.fragment
 
 import android.content.Context
 import android.content.Intent
@@ -7,7 +7,10 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -16,58 +19,63 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.activity.PlayerActivity
 import com.practicum.playlistmaker.search.domain.models.NetworkError
+import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.models.SearchViewState
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
+
+    private lateinit var binding: FragmentSearchBinding
+    private val viewModel by viewModel<SearchViewModel>()
+
+    private val trackListAdapter = TrackListAdapter { trackClickListener(it) }
+    private val trackHistoryAdapter = TrackListAdapter { trackClickListener(it) }
+
+    private var searchText = ""
+
+    private lateinit var toolbar: Toolbar
+    private lateinit var progressBar: ProgressBar
+    private lateinit var searchEditText: EditText
+    private lateinit var clearTextButton: ImageView
+    private lateinit var trackListRecyclerView: RecyclerView
+    private lateinit var trackHistoryRecyclerView: RecyclerView
+    private lateinit var searchHistoryLayout: LinearLayout
+    private lateinit var clearHistoryButton: Button
+    private lateinit var errorTextView: TextView
+    private lateinit var errorImage: ImageView
+    private lateinit var refreshButton: Button
 
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
     private val searchRunnable = Runnable { viewModel.searchTracks(searchText) }
 
-    private lateinit var toolbar: Toolbar
 
-    private lateinit var progressBar: ProgressBar
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-    private lateinit var searchEditText: EditText
-    private var searchText = ""
-    private lateinit var clearTextButton: ImageView
-
-    private lateinit var trackListRecyclerView: RecyclerView
-    private lateinit var trackHistoryRecyclerView: RecyclerView
-    private val trackListAdapter = TrackListAdapter { trackClickListener(it) }
-    private val trackHistoryAdapter = TrackListAdapter { trackClickListener(it) }
-
-    private lateinit var historyLayout: LinearLayout
-    private lateinit var clearHistoryButton: Button
-
-    private lateinit var errorTextView: TextView
-    private lateinit var errorImage: ImageView
-    private lateinit var refreshButton: Button
-
-    private val viewModel by viewModel<SearchViewModel>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initViews()
         initListeners()
         initSearchEditTextListeners()
 
-        trackListRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+
+        trackListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         trackListRecyclerView.adapter = trackListAdapter
-        trackHistoryRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+        trackHistoryRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, true)
         trackHistoryRecyclerView.adapter = trackHistoryAdapter
 
-        setSupportActionBar(toolbar)
         searchEditText.requestFocus()
 
-        viewModel.stateLiveData.observe(this) { state ->
+        viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
             when(state) {
                 is SearchViewState.SearchHistory -> {
                     showHistoryList(state.tracks)
@@ -87,18 +95,19 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        toolbar = findViewById(R.id.toolbar)
-        progressBar = findViewById(R.id.progress_bar)
-        clearTextButton = findViewById(R.id.clear_text_button)
-        searchEditText = findViewById(R.id.search_edit_text)
-        trackListRecyclerView = findViewById(R.id.track_list_recycler_view)
-        trackHistoryRecyclerView = findViewById(R.id.track_history_recycler_view)
-        errorTextView = findViewById(R.id.error_text)
-        errorImage = findViewById(R.id.error_image)
-        refreshButton = findViewById(R.id.refresh_button)
-        historyLayout = findViewById(R.id.search_history_layout)
-        clearHistoryButton = findViewById(R.id.clear_history_button)
+        toolbar = binding.toolbar
+        progressBar = binding.progressBar
+        clearTextButton = binding.clearTextButton
+        searchEditText = binding.searchEditText
+        trackListRecyclerView = binding.trackListRecyclerView
+        trackHistoryRecyclerView = binding.trackHistoryRecyclerView
+        errorTextView = binding.errorText
+        errorImage = binding.errorImage
+        refreshButton = binding.refreshButton
+        searchHistoryLayout = binding.searchHistoryLayout
+        clearHistoryButton = binding.clearHistoryButton
     }
+
 
     private fun initListeners() {
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
@@ -123,12 +132,9 @@ class SearchActivity : AppCompatActivity() {
             errorTextView.visibility = View.GONE
             refreshButton.visibility = View.GONE
 
-            val view = this.currentFocus
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            if (view != null) {
-                inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
-            }
-
+            val inputMethodManager =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(searchEditText.windowToken, 0)
         }
 
         refreshButton.setOnClickListener {
@@ -171,10 +177,11 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
-            historyLayout.visibility = if (hasFocus && searchEditText.text.isEmpty() && trackHistoryAdapter.trackList.isNotEmpty()) View.VISIBLE else View.GONE
+            searchHistoryLayout.visibility = if (hasFocus && searchEditText.text.isEmpty() && trackHistoryAdapter.trackList.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
     }
+
 
     private fun showHistoryList(tracks: List<Track>) {
         trackHistoryAdapter.setTracks(tracks)
@@ -184,16 +191,16 @@ class SearchActivity : AppCompatActivity() {
         trackListRecyclerView.visibility = View.GONE
         progressBar.visibility = View.GONE
         if (tracks.isNotEmpty()) {
-            historyLayout.visibility = View.VISIBLE
+            searchHistoryLayout.visibility = View.VISIBLE
         }
         else {
-            historyLayout.visibility = View.GONE
+            searchHistoryLayout.visibility = View.GONE
         }
     }
 
     private fun showLoading() {
         progressBar.visibility = View.VISIBLE
-        historyLayout.visibility = View.GONE
+        searchHistoryLayout.visibility = View.GONE
         trackListRecyclerView.visibility = View.GONE
         errorImage.visibility = View.GONE
         errorTextView.visibility = View.GONE
@@ -201,7 +208,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showSearchResult(tracks: List<Track>) {
-        historyLayout.visibility = View.GONE
+        searchHistoryLayout.visibility = View.GONE
         progressBar.visibility = View.GONE
         trackListRecyclerView.visibility = View.VISIBLE
         trackListAdapter.setTracks(tracks)
@@ -232,12 +239,11 @@ class SearchActivity : AppCompatActivity() {
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
+
     private fun trackClickListener(track: Track) {
         if (clickDebounce()) {
-            viewModel.addTrackToHistory(track) 
-                //val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK,
-                //Gson().toJson(track))
-            val intent = Intent(this, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK, track)
+            viewModel.addTrackToHistory(track)
+            val intent = Intent(activity, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK, track)
             startActivity(intent)
         }
     }
@@ -259,25 +265,12 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_TEXT, searchText)
-        outState.putInt(LIST_VISIBILITY, trackListRecyclerView.visibility)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchText = savedInstanceState.getString(SEARCH_TEXT).toString()
-        searchEditText.setText(searchText)
-        val visibility = savedInstanceState.getInt(LIST_VISIBILITY)
-        trackListRecyclerView.visibility = visibility
-    }
-
-
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val LIST_VISIBILITY = "LIST_VISIBILITY"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        fun newInstance() = SearchFragment()
     }
+
 }
