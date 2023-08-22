@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.ActivityNavigatorExtras
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -84,7 +85,8 @@ class SearchFragment : Fragment() {
 
         onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
             viewModel.addTrackToHistory(track)
-            findNavController().navigate(R.id.action_searchFragment_to_playerActivity)
+            val bundle = bundleOf(PlayerActivity.TRACK to track)
+            findNavController().navigate(R.id.action_searchFragment_to_playerActivity, bundle)
         }
 
         initViews()
