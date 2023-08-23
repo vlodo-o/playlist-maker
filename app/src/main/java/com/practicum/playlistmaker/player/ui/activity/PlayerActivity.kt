@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.player.ui.activity
 
 import android.os.Build
 import android.os.Bundle
-import android.os.Trace
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView

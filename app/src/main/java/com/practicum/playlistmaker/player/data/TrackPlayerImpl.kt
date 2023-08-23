@@ -25,8 +25,10 @@ class TrackPlayerImpl: TrackPlayer {
     }
 
     override fun pause() {
-        mediaPlayer?.pause()
-        playerState = PlayerState.PAUSED
+        if (playerState != PlayerState.DEFAULT) {
+            mediaPlayer?.pause()
+            playerState = PlayerState.PAUSED
+        }
     }
 
     override fun release() {
