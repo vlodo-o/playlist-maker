@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.domain.SearchInteractor
+import com.practicum.playlistmaker.search.domain.models.SearchResult
 import com.practicum.playlistmaker.search.ui.models.SearchViewState
 import com.practicum.playlistmaker.utils.debounce
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
@@ -46,14 +48,20 @@ class SearchViewModel(
     private fun loadTracks(query: String) {
         _stateLiveData.value = SearchViewState.Loading
 
-        searchInteractor.searchTracks(query,
-            onSuccess = { trackList ->
-                _stateLiveData.value = SearchViewState.SearchedTracks(trackList)
-            },
-            onError = { error ->
-                _stateLiveData.value = SearchViewState.SearchError(error)
-            }
-        )
+        viewModelScope.launch {
+            searchInteractor
+                .searchTracks(query)
+                .collect { result ->
+                    when (result) {
+                        is SearchResult.Success -> {
+                            _stateLiveData.value = SearchViewState.SearchedTracks(result.data!!)
+                        }
+                        is SearchResult.Error -> {
+                            _stateLiveData.value = SearchViewState.SearchError(result.error!!)
+                        }
+                    }
+                }
+        }
     }
 
     fun clearHistory() {

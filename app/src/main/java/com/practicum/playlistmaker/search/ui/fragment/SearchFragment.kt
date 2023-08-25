@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.activity.PlayerActivity
-import com.practicum.playlistmaker.search.domain.models.NetworkError
+import com.practicum.playlistmaker.search.data.network.NetworkError
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.models.SearchViewState
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
@@ -232,7 +232,15 @@ class SearchFragment : Fragment() {
                 errorTextView.visibility = View.VISIBLE
                 errorImage.setImageResource(R.drawable.ic_network_error)
                 errorTextView.text = getString(R.string.network_error)
-            }}
+            }
+            NetworkError.SERVER_ERROR -> {
+                refreshButton.visibility = View.VISIBLE
+                errorImage.visibility = View.VISIBLE
+                errorTextView.visibility = View.VISIBLE
+                errorImage.setImageResource(R.drawable.ic_network_error)
+                errorTextView.text = getString(R.string.network_error)
+            }
+        }
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
