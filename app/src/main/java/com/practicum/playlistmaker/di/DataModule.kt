@@ -15,7 +15,7 @@ import org.koin.dsl.module
 val dataModule = module {
 
     single<NetworkClient> {
-        RetrofitNetworkClient(androidContext())
+        RetrofitNetworkClient()
     }
 
     single {

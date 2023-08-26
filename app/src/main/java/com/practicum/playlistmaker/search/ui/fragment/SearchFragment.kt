@@ -10,7 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
@@ -114,12 +119,6 @@ class SearchFragment : Fragment() {
     private fun initListeners() {
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
             viewModel.searchFocusChanged(hasFocus, searchEditText.text.toString())
-        }
-
-        refreshButton.setOnClickListener {
-            if (searchText.isNotEmpty()) {
-                viewModel.searchTracks(searchText)
-            }
         }
 
         clearHistoryButton.setOnClickListener {
@@ -227,13 +226,6 @@ class SearchFragment : Fragment() {
                 errorTextView.text = getString(R.string.not_found)
             }
             NetworkError.CONNECTION_ERROR -> {
-                refreshButton.visibility = View.VISIBLE
-                errorImage.visibility = View.VISIBLE
-                errorTextView.visibility = View.VISIBLE
-                errorImage.setImageResource(R.drawable.ic_network_error)
-                errorTextView.text = getString(R.string.network_error)
-            }
-            NetworkError.SERVER_ERROR -> {
                 refreshButton.visibility = View.VISIBLE
                 errorImage.visibility = View.VISIBLE
                 errorTextView.visibility = View.VISIBLE

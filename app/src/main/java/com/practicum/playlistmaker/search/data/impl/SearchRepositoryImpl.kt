@@ -16,9 +16,6 @@ class SearchRepositoryImpl (val networkClient: NetworkClient, val storage: Searc
     override fun searchTracks(query: String): Flow<SearchResult> = flow {
         val response = networkClient.doRequest(query)
         when (response.resultCode) {
-            -1 -> {
-                emit(SearchResult.Error(error = NetworkError.CONNECTION_ERROR))
-            }
             200 -> {
                 val tracksList = (response as TracksResponse).results
                 if (tracksList.isEmpty())
@@ -28,7 +25,7 @@ class SearchRepositoryImpl (val networkClient: NetworkClient, val storage: Searc
                 }
             }
             else -> {
-                emit(SearchResult.Error(error = NetworkError.SERVER_ERROR))
+                emit(SearchResult.Error(error = NetworkError.CONNECTION_ERROR))
             }
         }
     }

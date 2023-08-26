@@ -9,6 +9,7 @@ import com.practicum.playlistmaker.search.domain.SearchInteractor
 import com.practicum.playlistmaker.search.domain.models.SearchResult
 import com.practicum.playlistmaker.search.ui.models.SearchViewState
 import com.practicum.playlistmaker.utils.debounce
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -38,11 +39,9 @@ class SearchViewModel(
 
     fun searchTracks(query: String) {
         if (query.isEmpty()) return
+        latestSearchText = query
+        trackSearchDebounce(query)
 
-        if (latestSearchText != query) {
-            latestSearchText = query
-            trackSearchDebounce(query)
-        }
     }
 
     private fun loadTracks(query: String) {
