@@ -1,10 +1,7 @@
 package com.practicum.playlistmaker.search.ui.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -13,18 +10,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.activity.PlayerActivity
-import com.practicum.playlistmaker.search.domain.models.NetworkError
+import com.practicum.playlistmaker.search.data.network.NetworkError
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.models.SearchViewState
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
+import com.practicum.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -32,8 +38,10 @@ class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private val viewModel by viewModel<SearchViewModel>()
 
-    private val trackListAdapter = TrackListAdapter { trackClickListener(it) }
-    private val trackHistoryAdapter = TrackListAdapter { trackClickListener(it) }
+    private lateinit var onTrackClickDebounce: (Track) -> Unit
+
+    private val trackListAdapter = TrackListAdapter { onTrackClickDebounce(it) }
+    private val trackHistoryAdapter = TrackListAdapter { onTrackClickDebounce(it) }
 
     private var searchText = ""
 
@@ -49,31 +57,13 @@ class SearchFragment : Fragment() {
     private lateinit var errorImage: ImageView
     private lateinit var refreshButton: Button
 
-    private val handler = Handler(Looper.getMainLooper())
-    private var isClickAllowed = true
-    private val searchRunnable = Runnable { viewModel.searchTracks(searchText) }
-
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initViews()
-        initListeners()
-        initSearchEditTextListeners()
-
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-
-        trackListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        trackListRecyclerView.adapter = trackListAdapter
-        trackHistoryRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, true)
-        trackHistoryRecyclerView.adapter = trackHistoryAdapter
-
-        searchEditText.requestFocus()
 
         viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
             when(state) {
@@ -92,6 +82,24 @@ class SearchFragment : Fragment() {
             }
         }
 
+        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+            viewModel.addTrackToHistory(track)
+            val bundle = bundleOf(PlayerActivity.TRACK to track)
+            findNavController().navigate(R.id.action_searchFragment_to_playerActivity, bundle)
+        }
+
+        initViews()
+        initListeners()
+        initSearchEditTextListeners()
+
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+
+        trackListRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        trackListRecyclerView.adapter = trackListAdapter
+        trackHistoryRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, true)
+        trackHistoryRecyclerView.adapter = trackHistoryAdapter
+
+        searchEditText.requestFocus()
     }
 
     private fun initViews() {
@@ -108,16 +116,9 @@ class SearchFragment : Fragment() {
         clearHistoryButton = binding.clearHistoryButton
     }
 
-
     private fun initListeners() {
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
             viewModel.searchFocusChanged(hasFocus, searchEditText.text.toString())
-        }
-
-        refreshButton.setOnClickListener {
-            if (searchText.isNotEmpty()) {
-                viewModel.searchTracks(searchText)
-            }
         }
 
         clearHistoryButton.setOnClickListener {
@@ -156,7 +157,7 @@ class SearchFragment : Fragment() {
                     viewModel.clearSearchText()
                 }
                 else {
-                    searchDebounce()
+                    viewModel.searchTracks(searchText)
                 }
             }
 
@@ -181,7 +182,6 @@ class SearchFragment : Fragment() {
         }
 
     }
-
 
     private fun showHistoryList(tracks: List<Track>) {
         trackHistoryAdapter.setTracks(tracks)
@@ -231,30 +231,8 @@ class SearchFragment : Fragment() {
                 errorTextView.visibility = View.VISIBLE
                 errorImage.setImageResource(R.drawable.ic_network_error)
                 errorTextView.text = getString(R.string.network_error)
-            }}
-    }
-
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
-
-
-    private fun trackClickListener(track: Track) {
-        if (clickDebounce()) {
-            viewModel.addTrackToHistory(track)
-            val intent = Intent(activity, PlayerActivity::class.java).putExtra(PlayerActivity.TRACK, track)
-            startActivity(intent)
+            }
         }
-    }
-
-    private fun clickDebounce() : Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -266,10 +244,7 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        const val SEARCH_TEXT = "SEARCH_TEXT"
-        const val LIST_VISIBILITY = "LIST_VISIBILITY"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
         fun newInstance() = SearchFragment()
     }
 

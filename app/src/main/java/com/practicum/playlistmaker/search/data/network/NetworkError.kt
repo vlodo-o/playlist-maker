@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.domain.models
+package com.practicum.playlistmaker.search.data.network
 
 enum class NetworkError {
     EMPTY_RESULT,

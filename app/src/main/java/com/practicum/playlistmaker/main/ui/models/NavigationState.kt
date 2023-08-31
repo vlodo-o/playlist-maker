@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.player.ui.models
+package com.practicum.playlistmaker.main.ui.models
 
 sealed class NavigationState {
     object SearchScreen: NavigationState()

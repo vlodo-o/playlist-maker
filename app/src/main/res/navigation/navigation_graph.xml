@@ -28,5 +28,8 @@
         android:id="@+id/playerActivity"
         android:name="com.practicum.playlistmaker.player.ui.activity.PlayerActivity"
         android:label="activity_player"
-        tools:layout="@layout/activity_player" />
+        tools:layout="@layout/activity_player" >
+        <argument android:name="track"
+            app:argType="com.practicum.playlistmaker.search.domain.models.Track" />
+    </activity>
 </navigation>

@@ -3,34 +3,40 @@ package com.practicum.playlistmaker.player.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.models.PlayerState
-import com.practicum.playlistmaker.player.ui.PlayTimer
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PlayerViewModel (private val interactor: PlayerInteractor): ViewModel() {
 
-    private val playTimer: PlayTimer = PlayTimer(interactor) { _playProgress.postValue(it) }
     private val _playState = MutableLiveData<Boolean>()
     val playState: LiveData<Boolean> = _playState
 
     private val _playProgress = MutableLiveData<String>()
     val playProgress: LiveData<String> = _playProgress
 
+    private var timerJob: Job? = null
+
     private fun startPlayer(trackUrl: String) {
         interactor.startPlayer(trackUrl)
         _playState.value = true
-        playTimer.startTimer()
+        startTimer()
     }
 
     fun pausePlayer() {
         interactor.pausePlayer()
         _playState.value = false
-        playTimer.pauseTimer()
+        timerJob?.cancel()
     }
 
     fun stopPlayer() {
         interactor.stopPlayer()
-
+        _playState.value = false
     }
 
     fun playbackControl(trackUrl: String) {
@@ -45,15 +51,29 @@ class PlayerViewModel (private val interactor: PlayerInteractor): ViewModel() {
                 startPlayer(trackUrl)
                 interactor.setTrackCompletionListener {
                     _playState.value = false
-                    playTimer.pauseTimer()
+                    timerJob?.cancel()
                     _playProgress.value = TIMER_START
                 }
             }
         }
     }
 
+    private fun startTimer() {
+        timerJob = viewModelScope.launch {
+            while (interactor.getPlayerState() == PlayerState.PLAYING) {
+                delay(DURATION_UPDATE_DELAY_MS)
+                _playProgress.postValue(millisecondsToString(interactor.getCurrentPosition()))
+            }
+        }
+    }
+
+    private fun millisecondsToString(duration: Int): String {
+        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(duration)
+    }
+
     companion object {
         const val TIMER_START = "00:00"
+        private const val DURATION_UPDATE_DELAY_MS = 300L
     }
 
 }
