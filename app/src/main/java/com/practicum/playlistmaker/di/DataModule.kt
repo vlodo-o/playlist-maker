@@ -1,6 +1,8 @@
 package com.practicum.playlistmaker.di
 
 import android.content.Context
+import androidx.room.Room
+import com.practicum.playlistmaker.medialib.data.db.AppDatabase
 import com.practicum.playlistmaker.search.data.network.NetworkClient
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.search.data.storage.SearchHistoryStorage
@@ -23,6 +25,11 @@ val dataModule = module {
             .getSharedPreferences(
                 "local_storage", Context.MODE_PRIVATE
             )
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
     }
 
     single<SearchHistoryStorage> {

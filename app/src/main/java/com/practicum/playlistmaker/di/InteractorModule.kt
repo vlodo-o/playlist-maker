@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.di
 
+import com.practicum.playlistmaker.medialib.domain.MedialibInteractor
+import com.practicum.playlistmaker.medialib.domain.impl.MedialibInteractorImpl
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.impl.PlayerInteractorImpl
 import com.practicum.playlistmaker.search.domain.SearchInteractor
@@ -12,6 +14,9 @@ import org.koin.dsl.module
 
 val interactorModule = module {
 
+    single<MedialibInteractor> {
+        MedialibInteractorImpl(get())
+    }
     single<SearchInteractor> {
         SearchInteractorImpl(get())
     }

@@ -64,6 +64,14 @@ class PlayerActivity : AppCompatActivity() {
             trackTimeCountTextView.text = duration
         }
 
+        viewModel.favoriteState.observe(this) { isFavorite ->
+            if (isFavorite) {
+                favoriteButton.setImageResource(R.drawable.ic_is_favorite)
+            }
+            else {
+                favoriteButton.setImageResource(R.drawable.ic_not_favorite)
+            }
+        }
     }
 
     override fun onPause() {
@@ -101,6 +109,10 @@ class PlayerActivity : AppCompatActivity() {
         playButton.setOnClickListener {
             viewModel.playbackControl(track.previewUrl)
         }
+
+        favoriteButton.setOnClickListener {
+            viewModel.favoriteControl(track)
+        }
     }
 
     private fun setTrackInfo() {
@@ -121,6 +133,8 @@ class PlayerActivity : AppCompatActivity() {
         trackGenreTextView.text = track.primaryGenreName
         trackYearTextView.text = track.releaseYear
         trackCountryTextView.text = track.country
+
+        viewModel.checkFavorite(track.trackId)
     }
 
     companion object {

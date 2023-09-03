@@ -119,7 +119,7 @@
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/favorite_button"
                 style="@style/PlayerFAB"
-                android:src="@drawable/ic_favorite"
+                android:src="@drawable/ic_not_favorite"
                 app:layout_constraintBottom_toBottomOf="@id/play_button"
                 app:layout_constraintEnd_toEndOf="@id/right_guideline"
                 app:layout_constraintStart_toEndOf="@id/play_button"
