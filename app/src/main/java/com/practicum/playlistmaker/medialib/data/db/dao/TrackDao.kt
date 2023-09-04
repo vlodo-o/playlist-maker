@@ -16,7 +16,7 @@ interface TrackDao {
     @Query("DELETE FROM ${TrackEntity.TABLE_NAME} WHERE trackId = :trackId")
     suspend fun deleteTrack(trackId: String)
 
-    @Query("SELECT * FROM ${TrackEntity.TABLE_NAME}")
+    @Query("SELECT * FROM ${TrackEntity.TABLE_NAME} ORDER BY saveDate DESC")
     suspend fun getFavoriteTracks(): List<TrackEntity>
 
     @Query("SELECT EXISTS(SELECT 1 FROM ${TrackEntity.TABLE_NAME} WHERE trackId = :trackId)")

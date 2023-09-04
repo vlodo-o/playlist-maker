@@ -16,7 +16,8 @@ data class TrackEntity (
     val releaseDate: String,
     val primaryGenreName: String,
     val country: String,
-    val previewUrl: String
+    val previewUrl: String,
+    val saveDate: Long
 ) {
     companion object {
         const val TABLE_NAME = "favorite_tracks"

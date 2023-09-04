@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.medialib.data.converters
 
 import com.practicum.playlistmaker.medialib.data.db.entity.TrackEntity
 import com.practicum.playlistmaker.search.domain.models.Track
+import java.util.Calendar
 
 class TrackDbConverter {
 
@@ -16,7 +17,8 @@ class TrackDbConverter {
             releaseDate = track.releaseDate,
             primaryGenreName = track.primaryGenreName,
             country = track.country,
-            previewUrl = track.previewUrl)
+            previewUrl = track.previewUrl,
+            saveDate = Calendar.getInstance().timeInMillis)
     }
 
     fun map(track: TrackEntity): Track {
