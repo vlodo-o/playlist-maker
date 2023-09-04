@@ -99,15 +99,12 @@
         <item name="layout_constrainedWidth">true</item>
     </style>
 
-    <style name="PlayerFAB">
+    <style name="PlayerButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:backgroundTint">?attr/floatingActionButtonColor</item>
+        <item name="android:backgroundTint">@android:color/transparent</item>
         <item name="android:foregroundGravity">center</item>
-        <item name="elevation">0dp</item>
         <item name="borderWidth">0dp</item>
-        <item name="maxImageSize">@dimen/dimen_24dp</item>
-        <item name="tint">@color/yp_white</item>
     </style>
 
     <style name="TabTextStyle" parent="@android:style/TextAppearance.Small">

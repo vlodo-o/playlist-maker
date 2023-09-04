@@ -91,10 +91,10 @@
                 android:visibility="visible"
                 app:constraint_referenced_ids="save_button, play_button, favorite_button" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <ImageButton
                 android:id="@+id/save_button"
-                style="@style/PlayerFAB"
-                android:src="@drawable/ic_save"
+                style="@style/PlayerButton"
+                android:src="@drawable/save_button"
                 app:layout_constraintBottom_toBottomOf="@id/play_button"
                 app:layout_constraintEnd_toStartOf="@id/play_button"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -116,10 +116,10 @@
                 app:maxImageSize="84dp"
                 app:tint="?attr/colorOnPrimary" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <ImageButton
                 android:id="@+id/favorite_button"
-                style="@style/PlayerFAB"
-                android:src="@drawable/ic_not_favorite"
+                style="@style/PlayerButton"
+                android:src="@drawable/not_favorite_button"
                 app:layout_constraintBottom_toBottomOf="@id/play_button"
                 app:layout_constraintEnd_toEndOf="@id/right_guideline"
                 app:layout_constraintStart_toEndOf="@id/play_button"
