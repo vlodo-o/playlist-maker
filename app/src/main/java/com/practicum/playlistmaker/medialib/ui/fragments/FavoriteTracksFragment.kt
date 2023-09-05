@@ -22,7 +22,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteTracksFragment: Fragment() {
 
-    private lateinit var binding: FragmentFavoriteTracksBinding
+    private var _binding: FragmentFavoriteTracksBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<FavoriteTracksViewModel>()
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
@@ -31,7 +32,7 @@ class FavoriteTracksFragment: Fragment() {
     private lateinit var favoritesRecyclerView: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentFavoriteTracksBinding.inflate(inflater, container, false)
+        _binding = FragmentFavoriteTracksBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -59,6 +60,11 @@ class FavoriteTracksFragment: Fragment() {
         }
 
         viewModel.getFavoriteTracks()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

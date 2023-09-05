@@ -11,11 +11,13 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.FragmentFavoriteTracksBinding
 import com.practicum.playlistmaker.databinding.FragmentMedialibBinding
 
 class MedialibFragment : Fragment()  {
 
-    private lateinit var binding: FragmentMedialibBinding
+    private var _binding: FragmentMedialibBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var toolbar: Toolbar
     private lateinit var tabMediator: TabLayoutMediator
@@ -23,7 +25,7 @@ class MedialibFragment : Fragment()  {
     private lateinit var medialibViewPager: ViewPager2
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentMedialibBinding.inflate(inflater, container, false)
+        _binding = FragmentMedialibBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -47,6 +49,11 @@ class MedialibFragment : Fragment()  {
         toolbar = binding.toolbar
         medialibViewPager = binding.medialibViewPager
         medialibTabLayout = binding.tabLayout
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

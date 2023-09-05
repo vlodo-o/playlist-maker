@@ -6,8 +6,8 @@ import java.util.Calendar
 
 class TrackDbConverter {
 
-    fun map(track: Track): TrackEntity {
-        return TrackEntity(
+    fun map(track: Track) =
+        TrackEntity(
             trackId = track.trackId,
             trackName = track.trackName,
             artistName = track.artistName,
@@ -19,10 +19,9 @@ class TrackDbConverter {
             country = track.country,
             previewUrl = track.previewUrl,
             saveDate = Calendar.getInstance().timeInMillis)
-    }
 
-    fun map(track: TrackEntity): Track {
-        return Track(
+    fun map(track: TrackEntity) =
+        Track(
             trackId = track.trackId,
             trackName = track.trackName,
             artistName = track.artistName,
@@ -34,5 +33,4 @@ class TrackDbConverter {
             country = track.country,
             previewUrl = track.previewUrl
         )
-    }
 }
