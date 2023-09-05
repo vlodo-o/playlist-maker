@@ -47,7 +47,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         else {
             @Suppress("DEPRECATION")
-            intent.getParcelableExtra<Track>(TRACK)
+            track = intent.getParcelableExtra(TRACK)!!
         }
 
         initViews()
