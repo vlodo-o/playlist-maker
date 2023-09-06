@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.player.ui.activity
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -29,9 +30,9 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var trackGenreTextView: TextView
     private lateinit var trackCountryTextView: TextView
 
-    private lateinit var saveButton: FloatingActionButton
+    private lateinit var saveButton: ImageButton
     private lateinit var playButton: FloatingActionButton
-    private lateinit var favoriteButton: FloatingActionButton
+    private lateinit var favoriteButton: ImageButton
 
     private lateinit var track: Track
 
@@ -46,7 +47,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         else {
             @Suppress("DEPRECATION")
-            intent.getParcelableExtra<Track>(TRACK)
+            track = intent.getParcelableExtra(TRACK)!!
         }
 
         initViews()
@@ -64,6 +65,14 @@ class PlayerActivity : AppCompatActivity() {
             trackTimeCountTextView.text = duration
         }
 
+        viewModel.favoriteState.observe(this) { isFavorite ->
+            if (isFavorite) {
+                favoriteButton.setImageResource(R.drawable.favorite_button)
+            }
+            else {
+                favoriteButton.setImageResource(R.drawable.not_favorite_button)
+            }
+        }
     }
 
     override fun onPause() {
@@ -101,6 +110,10 @@ class PlayerActivity : AppCompatActivity() {
         playButton.setOnClickListener {
             viewModel.playbackControl(track.previewUrl)
         }
+
+        favoriteButton.setOnClickListener {
+            viewModel.favoriteControl(track)
+        }
     }
 
     private fun setTrackInfo() {
@@ -121,6 +134,8 @@ class PlayerActivity : AppCompatActivity() {
         trackGenreTextView.text = track.primaryGenreName
         trackYearTextView.text = track.releaseYear
         trackCountryTextView.text = track.country
+
+        viewModel.checkFavorite(track.trackId)
     }
 
     companion object {

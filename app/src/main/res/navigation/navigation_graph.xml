@@ -18,6 +18,9 @@
         android:name="com.practicum.playlistmaker.medialib.ui.MedialibFragment"
         android:label="fragment_medialib"
         tools:layout="@layout/fragment_medialib" >
+        <action
+            android:id="@+id/action_medialibFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

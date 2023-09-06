@@ -4,15 +4,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.medialib.domain.MedialibInteractor
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.models.PlayerState
+import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel (private val interactor: PlayerInteractor): ViewModel() {
+class PlayerViewModel (
+    private val playerInteractor: PlayerInteractor,
+    private val medialibInteractor: MedialibInteractor
+    ): ViewModel() {
 
     private val _playState = MutableLiveData<Boolean>()
     val playState: LiveData<Boolean> = _playState
@@ -20,27 +28,32 @@ class PlayerViewModel (private val interactor: PlayerInteractor): ViewModel() {
     private val _playProgress = MutableLiveData<String>()
     val playProgress: LiveData<String> = _playProgress
 
+    private val _favoriteState = MutableLiveData<Boolean>()
+    val favoriteState: LiveData<Boolean> = _favoriteState
+
+    private var isFavorite = false
+
     private var timerJob: Job? = null
 
     private fun startPlayer(trackUrl: String) {
-        interactor.startPlayer(trackUrl)
+        playerInteractor.startPlayer(trackUrl)
         _playState.value = true
         startTimer()
     }
 
     fun pausePlayer() {
-        interactor.pausePlayer()
+        playerInteractor.pausePlayer()
         _playState.value = false
         timerJob?.cancel()
     }
 
     fun stopPlayer() {
-        interactor.stopPlayer()
+        playerInteractor.stopPlayer()
         _playState.value = false
     }
 
     fun playbackControl(trackUrl: String) {
-        when(interactor.getPlayerState()) {
+        when(playerInteractor.getPlayerState()) {
             PlayerState.PLAYING -> {
                 pausePlayer()
             }
@@ -49,7 +62,7 @@ class PlayerViewModel (private val interactor: PlayerInteractor): ViewModel() {
             }
             PlayerState.DEFAULT -> {
                 startPlayer(trackUrl)
-                interactor.setTrackCompletionListener {
+                playerInteractor.setTrackCompletionListener {
                     _playState.value = false
                     timerJob?.cancel()
                     _playProgress.value = TIMER_START
@@ -60,9 +73,37 @@ class PlayerViewModel (private val interactor: PlayerInteractor): ViewModel() {
 
     private fun startTimer() {
         timerJob = viewModelScope.launch {
-            while (interactor.getPlayerState() == PlayerState.PLAYING) {
+            while (playerInteractor.getPlayerState() == PlayerState.PLAYING) {
                 delay(DURATION_UPDATE_DELAY_MS)
-                _playProgress.postValue(millisecondsToString(interactor.getCurrentPosition()))
+                _playProgress.postValue(millisecondsToString(playerInteractor.getCurrentPosition()))
+            }
+        }
+    }
+
+    fun favoriteControl(track: Track) {
+        if (isFavorite) {
+            isFavorite = false
+            _favoriteState.value = false
+            viewModelScope.launch {
+                medialibInteractor.deleteTrack(track.trackId)
+            }
+        }
+        else {
+            isFavorite = true
+            _favoriteState.value = true
+            viewModelScope.launch {
+                medialibInteractor.saveTrack(track)
+            }
+        }
+    }
+
+    fun checkFavorite(trackId: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                medialibInteractor.isFavoriteTrack(trackId).collect {
+                    isFavorite = it
+                    _favoriteState.postValue(isFavorite)
+                }
             }
         }
     }
