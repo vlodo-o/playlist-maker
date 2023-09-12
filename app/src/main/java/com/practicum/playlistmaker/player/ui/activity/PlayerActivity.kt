@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.player.ui.activity
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -42,13 +41,7 @@ class PlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        if (Build.VERSION.SDK_INT >= 33) {
-            track = intent.getParcelableExtra(TRACK, Track::class.java)!!
-        }
-        else {
-            @Suppress("DEPRECATION")
-            track = intent.getParcelableExtra(TRACK)!!
-        }
+        track = intent.getParcelableExtra(TRACK)!!
 
         initViews()
         initListeners()
@@ -117,7 +110,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun setTrackInfo() {
-        val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.full_track_cover_radius)
+        val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius)
         Glide.with(this).load(track.getCoverArtwork())
             .placeholder(R.drawable.track_placeholder).centerCrop()
             .transform(RoundedCorners(cornerRadius)).into(coverImageView)
