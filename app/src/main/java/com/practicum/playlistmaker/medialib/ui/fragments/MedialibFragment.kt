@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.medialib.ui
+package com.practicum.playlistmaker.medialib.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.FragmentFavoriteTracksBinding
 import com.practicum.playlistmaker.databinding.FragmentMedialibBinding
 
 class MedialibFragment : Fragment()  {

@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/medialibFragment"
-        android:name="com.practicum.playlistmaker.medialib.ui.MedialibFragment"
+        android:name="com.practicum.playlistmaker.medialib.ui.fragments.MedialibFragment"
         android:label="fragment_medialib"
         tools:layout="@layout/fragment_medialib" >
         <action
@@ -40,7 +40,7 @@
     </activity>
     <fragment
         android:id="@+id/newPlaylistFragment"
-        android:name="com.practicum.playlistmaker.NewPlaylistFragment"
+        android:name="com.practicum.playlistmaker.medialib.ui.fragments.playlists.NewPlaylistFragment"
         android:label="fragment_new_playlist"
         tools:layout="@layout/fragment_new_playlist" />
 </navigation>

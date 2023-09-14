@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewPlaylistFragment">
+    tools:context=".medialib.ui.fragments.playlists.NewPlaylistFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -106,6 +106,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/create"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="@id/bottom_guideline"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
         app:layout_constraintStart_toStartOf="@id/left_guideline" />

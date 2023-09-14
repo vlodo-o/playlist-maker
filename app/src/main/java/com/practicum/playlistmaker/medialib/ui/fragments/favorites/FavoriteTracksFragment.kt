@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.medialib.ui.fragments
+package com.practicum.playlistmaker.medialib.ui.fragments.favorites
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
