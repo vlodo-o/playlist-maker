@@ -4,14 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.medialib.domain.MedialibInteractor
+import com.practicum.playlistmaker.medialib.domain.FavoriteTrackInteractor
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -19,7 +18,7 @@ import java.util.Locale
 
 class PlayerViewModel (
     private val playerInteractor: PlayerInteractor,
-    private val medialibInteractor: MedialibInteractor
+    private val favoriteTrackInteractor: FavoriteTrackInteractor
     ): ViewModel() {
 
     private val _playState = MutableLiveData<Boolean>()
@@ -85,14 +84,14 @@ class PlayerViewModel (
             isFavorite = false
             _favoriteState.value = false
             viewModelScope.launch {
-                medialibInteractor.deleteTrack(track.trackId)
+                favoriteTrackInteractor.deleteTrack(track.trackId)
             }
         }
         else {
             isFavorite = true
             _favoriteState.value = true
             viewModelScope.launch {
-                medialibInteractor.saveTrack(track)
+                favoriteTrackInteractor.saveTrack(track)
             }
         }
     }
@@ -100,7 +99,7 @@ class PlayerViewModel (
     fun checkFavorite(trackId: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                medialibInteractor.isFavoriteTrack(trackId).collect {
+                favoriteTrackInteractor.isFavoriteTrack(trackId).collect {
                     isFavorite = it
                     _favoriteState.postValue(isFavorite)
                 }

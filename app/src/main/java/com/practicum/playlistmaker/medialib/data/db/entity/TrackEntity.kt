@@ -20,6 +20,6 @@ data class TrackEntity (
     val saveDate: Long
 ) {
     companion object {
-        const val TABLE_NAME = "favorite_tracks"
+        const val TABLE_NAME = "favorite_track"
     }
 }

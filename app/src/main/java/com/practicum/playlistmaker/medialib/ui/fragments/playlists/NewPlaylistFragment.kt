@@ -1,29 +1,49 @@
 package com.practicum.playlistmaker.medialib.ui.fragments.playlists
 
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import androidx.fragment.app.viewModels
+import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputEditText
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.practicum.playlistmaker.medialib.ui.view_model.PlaylistsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewPlaylistFragment : Fragment() {
 
     private var _binding: FragmentNewPlaylistBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<PlaylistsViewModel>()
+    private val viewModel by viewModel<PlaylistsViewModel>()
 
     private lateinit var coverImageView: ImageView
     private lateinit var nameEditText: TextInputEditText
     private lateinit var descriptionEditText: TextInputEditText
     private lateinit var createButton: Button
+
+    private var imageUri: Uri? = null
+    private var pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        // Callback вызовется, когда пользователь выберет картинку
+        if (uri != null) {
+            Log.d("PhotoPicker", "Выбранный URI: $uri")
+            coverImageView.setImageURI(uri)
+            viewModel.saveImageToPrivateStorage(uri)
+        } else {
+            Log.d("PhotoPicker", "Ничего не выбрано")
+        }
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, ): View? {
         _binding = FragmentNewPlaylistBinding.inflate(inflater, container, false)
@@ -58,9 +78,17 @@ class NewPlaylistFragment : Fragment() {
         }
 
         nameEditText.addTextChangedListener(textWatcher)
+        
+        coverImageView.setOnClickListener {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
+        }
 
         createButton.setOnClickListener {
-            viewModel.createPlaylist()
+            viewModel.createPlaylist(nameEditText.text.toString(), descriptionEditText.text.toString(), imageUri.toString())
+            findNavController().navigateUp()
+            val message = resources.getString(R.string.playlist_created)
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 

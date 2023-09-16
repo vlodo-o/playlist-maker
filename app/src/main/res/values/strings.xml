@@ -37,4 +37,5 @@
     <string name="name">Название*</string>
     <string name="description">Описание</string>
     <string name="create">Создать</string>
+    <string name="playlist_created">Плейлист успешно создан!</string>
 </resources>
