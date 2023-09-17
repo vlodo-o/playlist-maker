@@ -1,33 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/new_playlist_button"
         style="@style/SmallButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="@dimen/dimen_24dp"
-        android:text="@string/new_playlist"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/new_playlist" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/playlists_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dimen_8dp"
+            android:layout_marginTop="@dimen/dimen_16dp"
+            android:layout_marginEnd="@dimen/dimen_16dp"
+            android:layout_marginBottom="40dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            tools:listitem="@layout/playlist_list_item" />
 
     <ImageView
         android:id="@+id/error_image"
         android:layout_width="@dimen/error_image_size"
         android:layout_height="@dimen/error_image_size"
+        android:layout_gravity="center"
         android:layout_marginTop="46dp"
-        android:src="@drawable/ic_not_found"
-        app:layout_constraintEnd_toEndOf="@id/new_playlist_button"
-        app:layout_constraintStart_toStartOf="@id/new_playlist_button"
-        app:layout_constraintTop_toBottomOf="@id/new_playlist_button" />
+        android:src="@drawable/ic_not_found" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="@dimen/dimen_16dp"
         android:text="@string/empty_playlists"
         android:textColor="?attr/colorOnPrimary"
@@ -36,4 +47,4 @@
         app:layout_constraintStart_toStartOf="@id/error_image"
         app:layout_constraintTop_toBottomOf="@id/error_image" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

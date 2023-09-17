@@ -43,7 +43,8 @@ class PlaylistsViewModel(
 
     fun saveImageToPrivateStorage(uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
-            playlistInteractor.saveImageToPrivateStorage(uri, "cover_${System.currentTimeMillis()}.jpg")
+            val privateUri = playlistInteractor.saveImageToPrivateStorage(uri, "cover_${System.currentTimeMillis()}.jpg")
+            _imageUri.postValue(privateUri)
         }
     }
 

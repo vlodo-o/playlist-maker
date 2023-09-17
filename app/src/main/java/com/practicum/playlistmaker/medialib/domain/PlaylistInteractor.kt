@@ -14,5 +14,5 @@ interface PlaylistInteractor {
 
     suspend fun updatePlaylist(playlist: PlaylistModel)
 
-    suspend fun saveImageToPrivateStorage(uri: Uri, name: String)
+    suspend fun saveImageToPrivateStorage(uri: Uri, name: String): Uri
 }

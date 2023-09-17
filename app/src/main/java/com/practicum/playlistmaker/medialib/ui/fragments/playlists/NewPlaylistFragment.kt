@@ -44,7 +44,6 @@ class NewPlaylistFragment : Fragment() {
         }
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, ): View? {
         _binding = FragmentNewPlaylistBinding.inflate(inflater, container, false)
         return binding.root
@@ -54,6 +53,10 @@ class NewPlaylistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         initListeners()
+
+        viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
+            imageUri = uri
+        }
     }
 
     private fun initViews() {
@@ -92,6 +95,10 @@ class NewPlaylistFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     companion object {
         fun newInstance() = NewPlaylistFragment()

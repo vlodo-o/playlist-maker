@@ -8,12 +8,12 @@ import android.os.Environment
 import com.practicum.playlistmaker.medialib.data.converters.PlaylistDbConverter
 import com.practicum.playlistmaker.medialib.data.db.AppDatabase
 import com.practicum.playlistmaker.medialib.data.db.entity.PlaylistEntity
-import com.practicum.playlistmaker.medialib.data.db.entity.TrackEntity
 import com.practicum.playlistmaker.medialib.domain.PlaylistRepository
 import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
-import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Calendar
@@ -49,17 +49,20 @@ class PlaylistRepositoryImpl(
         appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlist))
     }
 
-    override suspend fun saveImageToPrivateStorage(uri: Uri, name: String) {
-        val filePath = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),"my_album")
+    override suspend fun saveImageToPrivateStorage(uri: Uri, name: String): Uri {
+        val filePath = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),"playlist_maker")
         if (!filePath.exists()) {
             filePath.mkdirs()
         }
         val file = File(filePath, name)
         val inputStream = context.contentResolver.openInputStream(uri)
-        val outputStream = FileOutputStream(file)
+        val outputStream = withContext(Dispatchers.IO) {
+            FileOutputStream(file)
+        }
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+        return Uri.fromFile(file)
     }
 
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<PlaylistModel> {

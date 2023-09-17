@@ -26,7 +26,7 @@ class PlaylistInteractorImpl(
         playlistRepository.updatePlaylist(playlist)
     }
 
-    override suspend fun saveImageToPrivateStorage(uri: Uri, name: String) {
-        playlistRepository.saveImageToPrivateStorage(uri, name)
+    override suspend fun saveImageToPrivateStorage(uri: Uri, name: String): Uri {
+        return playlistRepository.saveImageToPrivateStorage(uri, name)
     }
 }
