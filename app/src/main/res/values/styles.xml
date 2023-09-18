@@ -131,7 +131,6 @@
 
     <style name="CreateButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_weight">1</item>
-        <item name="android:backgroundTint">@color/yp_gray</item>
         <item name="android:textAllCaps">false</item>
         <item name="fontFamily">@font/ys_display_medium</item>
         <item name="android:textColor">?attr/color</item>

@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.medialib.ui.fragments.playlists
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -100,13 +102,25 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private fun initListeners() {
-
         val textWatcher = object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                createButton.isEnabled = !nameEditText.text.isNullOrEmpty()
+                if (nameEditText.text.isNullOrEmpty()) {
+                    val color = "#" + Integer.toHexString(requireContext().getColor(R.color.yp_gray))
+                    createButton.apply {
+                        isEnabled = false
+                        backgroundTintList = ColorStateList.valueOf(Color.parseColor(color))
+                    }
+                } else {
+                    val color = "#" + Integer.toHexString(requireContext().getColor(R.color.yp_blue))
+                    createButton.apply {
+                        isEnabled = true
+                        backgroundTintList = ColorStateList.valueOf(Color.parseColor(color))
+                    }
+
+                }
             }
             override fun afterTextChanged(s: Editable?) {
                 // empty

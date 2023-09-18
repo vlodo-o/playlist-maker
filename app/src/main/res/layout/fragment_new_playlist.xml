@@ -106,6 +106,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/create"
+        android:backgroundTint="@color/yp_gray"
         android:enabled="false"
         app:layout_constraintBottom_toBottomOf="@id/bottom_guideline"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
