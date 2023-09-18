@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.medialib.domain
 
 import android.net.Uri
 import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
+import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistInteractor {
@@ -12,7 +13,9 @@ interface PlaylistInteractor {
 
     suspend fun getPlaylists(): Flow<List<PlaylistModel>>
 
-    suspend fun updatePlaylist(playlist: PlaylistModel)
+    suspend fun addTrackToPlaylist(playlist: PlaylistModel, track: Track)
 
     suspend fun saveImageToPrivateStorage(uri: Uri, name: String): Uri
+
+    fun isTrackInPlaylist(playlist: PlaylistModel, track: Track): Boolean
 }

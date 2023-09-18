@@ -12,9 +12,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentNewPlaylistBinding
@@ -57,6 +59,37 @@ class NewPlaylistFragment : Fragment() {
         viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
             imageUri = uri
         }
+
+        val confirmDialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(requireContext().getString(R.string.create_fragment_close_title))
+            .setMessage(requireContext().getString(R.string.create_fragment_close_mess))
+            .setNegativeButton(requireContext().getString(R.string.cancel)) { _, _ -> }
+            .setPositiveButton(requireContext().getString(R.string.finish)) { _, _ ->
+                navigateBack()
+            }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (imageUri == null &&
+                    binding.playlistName.text.isNullOrEmpty() &&
+                    binding.playlistDescription.text.isNullOrEmpty()) {
+                    navigateBack()
+                } else {
+                    confirmDialog.show()
+                }
+            }
+        })
+
+        binding.toolbar.setNavigationOnClickListener {
+            if (imageUri == null &&
+                binding.playlistName.text.isNullOrEmpty() &&
+                binding.playlistDescription.text.isNullOrEmpty()) {
+                navigateBack()
+            } else {
+                confirmDialog.show()
+            }
+        }
+
     }
 
     private fun initViews() {
@@ -89,9 +122,22 @@ class NewPlaylistFragment : Fragment() {
 
         createButton.setOnClickListener {
             viewModel.createPlaylist(nameEditText.text.toString(), descriptionEditText.text.toString(), imageUri.toString())
+            val message = "Плейлист ${nameEditText.text} создан"
+            if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                requireActivity().supportFragmentManager.popBackStack()
+            } else {
+                findNavController().navigateUp()
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun navigateBack() {
+        if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
+            requireActivity().supportFragmentManager.popBackStack()
+        } else {
             findNavController().navigateUp()
-            val message = resources.getString(R.string.playlist_created)
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 

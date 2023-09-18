@@ -53,7 +53,7 @@ class PlaylistsFragment : Fragment() {
 
         viewModel.playlistsState.observe(viewLifecycleOwner) { state ->
             if (state is PlaylistsState.Playlists) {
-                playlistAdapter.setPlaylists(state.playlists)
+                playlistAdapter.setPlaylists(state.content)
                 playlistsRecyclerView.visibility = View.VISIBLE
             } else {
                 playlistsRecyclerView.visibility = View.GONE

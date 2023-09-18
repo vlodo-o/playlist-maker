@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.medialib.ui.fragments.playlists
 
 import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
+import com.practicum.playlistmaker.player.ui.activity.PlayerActivity
 import java.io.File
 
 class PlaylistAdapter (
@@ -42,13 +44,17 @@ class PlaylistAdapter (
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.playlist_list_item, parent, false)
+        val view = if (parent.context is PlayerActivity) {
+            LayoutInflater.from(parent.context).inflate(R.layout.playlist_horizontal_list_item, parent, false)
+        } else {
+            LayoutInflater.from(parent.context).inflate(R.layout.playlist_list_item, parent, false)
+        }
         return PlaylistViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         holder.bind(playlistList[position])
-        holder.itemView.setOnClickListener { clickListener?.onPlaylistClick(playlistList.get(position)) }
+        holder.itemView.setOnClickListener { clickListener?.onPlaylistClick(playlistList[position]) }
     }
 
     override fun getItemCount(): Int {

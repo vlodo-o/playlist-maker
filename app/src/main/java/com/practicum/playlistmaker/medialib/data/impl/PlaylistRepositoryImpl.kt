@@ -10,6 +10,7 @@ import com.practicum.playlistmaker.medialib.data.db.AppDatabase
 import com.practicum.playlistmaker.medialib.data.db.entity.PlaylistEntity
 import com.practicum.playlistmaker.medialib.domain.PlaylistRepository
 import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
+import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -45,8 +46,10 @@ class PlaylistRepositoryImpl(
         emit(convertFromPlaylistEntity(playlists))
     }
 
-    override suspend fun updatePlaylist(playlist: PlaylistModel) {
-        appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlist))
+    override suspend fun addTrackToPlaylist(playlist: PlaylistModel, track: Track) {
+        playlist.tracks.add(track)
+        playlist.tracksCount += 1
+        updatePlaylist(playlist)
     }
 
     override suspend fun saveImageToPrivateStorage(uri: Uri, name: String): Uri {
@@ -65,6 +68,13 @@ class PlaylistRepositoryImpl(
         return Uri.fromFile(file)
     }
 
+    override fun isTrackInPlaylist(playlist: PlaylistModel, track: Track): Boolean {
+        return playlist.tracks.contains(track)
+    }
+
+    private suspend fun updatePlaylist(playlist: PlaylistModel) {
+        appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlist))
+    }
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<PlaylistModel> {
         return playlists.map {playlist -> playlistDbConverter.map(playlist)}
     }
