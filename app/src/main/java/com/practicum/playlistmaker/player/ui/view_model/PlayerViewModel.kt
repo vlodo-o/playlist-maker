@@ -56,9 +56,10 @@ class PlayerViewModel (
         timerJob?.cancel()
     }
 
-    fun stopPlayer() {
+    override fun onCleared() {
         playerInteractor.stopPlayer()
         _playState.value = false
+        super.onCleared()
     }
 
     fun playbackControl(trackUrl: String) {

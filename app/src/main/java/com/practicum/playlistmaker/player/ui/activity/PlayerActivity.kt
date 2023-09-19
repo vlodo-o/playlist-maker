@@ -102,11 +102,6 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.pausePlayer()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.stopPlayer()
-    }
-
     private fun initListeners() {
         binding.toolbar.setNavigationOnClickListener {
             finish()
