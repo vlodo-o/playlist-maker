@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.player.data
 
 import android.media.MediaPlayer
+import android.util.Log
 import com.practicum.playlistmaker.player.domain.api.TrackPlayer
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 
@@ -32,10 +33,12 @@ class TrackPlayerImpl: TrackPlayer {
     }
 
     override fun release() {
-        mediaPlayer?.stop()
-        mediaPlayer?.reset()
-        mediaPlayer?.release()
-        playerState = PlayerState.DEFAULT
+        if (playerState != PlayerState.DEFAULT) {
+            mediaPlayer?.stop()
+            mediaPlayer?.reset()
+            mediaPlayer?.release()
+            playerState = PlayerState.DEFAULT
+        }
     }
 
     override fun getCurrentPosition(): Int {
