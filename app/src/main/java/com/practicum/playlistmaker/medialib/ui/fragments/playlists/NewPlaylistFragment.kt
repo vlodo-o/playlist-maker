@@ -135,8 +135,9 @@ class NewPlaylistFragment : Fragment() {
         }
 
         createButton.setOnClickListener {
-            viewModel.createPlaylist(nameEditText.text.toString(), descriptionEditText.text.toString(), imageUri.toString())
-            val message = "Плейлист ${nameEditText.text} создан"
+            val playlistName = nameEditText.text.toString()
+            viewModel.createPlaylist(playlistName, descriptionEditText.text.toString(), imageUri.toString())
+            val message = getString(R.string.playlist_created, playlistName)
             if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 requireActivity().supportFragmentManager.popBackStack()

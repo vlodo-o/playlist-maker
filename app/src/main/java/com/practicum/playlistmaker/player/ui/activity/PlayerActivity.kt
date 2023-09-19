@@ -130,6 +130,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.newPlaylistButton.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
                 addToBackStack(null)
