@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.di
 
 import com.practicum.playlistmaker.medialib.data.converters.PlaylistDbConverter
+import com.practicum.playlistmaker.medialib.data.converters.PlaylistTrackDbConverter
 import com.practicum.playlistmaker.medialib.data.converters.TrackDbConverter
 import com.practicum.playlistmaker.medialib.data.impl.FavoriteTrackRepositoryImpl
 import com.practicum.playlistmaker.medialib.data.impl.PlaylistRepositoryImpl
@@ -17,7 +18,7 @@ import org.koin.dsl.module
 val repositoryModule = module {
 
     single<PlaylistRepository> {
-        PlaylistRepositoryImpl(get(), get(), get())
+        PlaylistRepositoryImpl(get(), get(), get(), get())
     }
 
     single<FavoriteTrackRepository> {
@@ -39,5 +40,7 @@ val repositoryModule = module {
     factory { TrackDbConverter() }
 
     factory { PlaylistDbConverter() }
+
+    factory { PlaylistTrackDbConverter() }
 
 }

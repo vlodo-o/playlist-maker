@@ -7,6 +7,6 @@ data class PlaylistModel (
     val name: String,
     val description: String,
     val imagePath: String,
-    val tracks: MutableList<Track>,
+    val tracks: MutableList<String>,
     var tracksCount: Int
 )

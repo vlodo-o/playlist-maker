@@ -11,7 +11,7 @@ data class PlaylistEntity (
     val name: String,
     val description: String,
     val imagePath: String,
-    val tracks: MutableList<TrackEntity> = mutableListOf(),
+    val tracks: MutableList<String> = mutableListOf(),
     val tracksCount: Int,
     val saveDate: Long)
 {

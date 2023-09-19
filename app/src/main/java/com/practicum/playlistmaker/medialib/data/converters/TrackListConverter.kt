@@ -7,13 +7,13 @@ import com.practicum.playlistmaker.medialib.data.db.entity.TrackEntity
 
 object TrackListConverter {
     @TypeConverter
-    fun listToJson(value: List<TrackEntity>): String {
+    fun listToJson(value: List<String>): String {
         return Gson().toJson(value)
     }
 
     @TypeConverter
-    fun jsonToList(value: String): List<TrackEntity> {
-        val listType = object : TypeToken<List<TrackEntity>>() {}.type
+    fun jsonToList(value: String): List<String> {
+        val listType = object : TypeToken<List<String>>() {}.type
         return Gson().fromJson(value, listType)
     }
 }

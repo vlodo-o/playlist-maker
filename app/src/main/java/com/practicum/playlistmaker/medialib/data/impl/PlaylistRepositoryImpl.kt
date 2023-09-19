@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import com.practicum.playlistmaker.medialib.data.converters.PlaylistDbConverter
+import com.practicum.playlistmaker.medialib.data.converters.PlaylistTrackDbConverter
 import com.practicum.playlistmaker.medialib.data.db.AppDatabase
 import com.practicum.playlistmaker.medialib.data.db.entity.PlaylistEntity
 import com.practicum.playlistmaker.medialib.domain.PlaylistRepository
@@ -22,6 +23,7 @@ import java.util.Calendar
 class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val playlistDbConverter: PlaylistDbConverter,
+    private val playlistTrackDbConverter: PlaylistTrackDbConverter,
     private val context: Context
 ): PlaylistRepository {
 
@@ -47,9 +49,10 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun addTrackToPlaylist(playlist: PlaylistModel, track: Track) {
-        playlist.tracks.add(track)
+        playlist.tracks.add(track.trackId)
         playlist.tracksCount += 1
         updatePlaylist(playlist)
+        appDatabase.playlistTrackDao().insertPlaylistTrack(playlistTrackDbConverter.map(track))
     }
 
     override suspend fun saveImageToPrivateStorage(uri: Uri, name: String): Uri {
@@ -69,7 +72,7 @@ class PlaylistRepositoryImpl(
     }
 
     override fun isTrackInPlaylist(playlist: PlaylistModel, track: Track): Boolean {
-        return playlist.tracks.contains(track)
+        return playlist.tracks.contains(track.trackId)
     }
 
     private suspend fun updatePlaylist(playlist: PlaylistModel) {
