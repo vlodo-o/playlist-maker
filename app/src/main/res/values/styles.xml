@@ -77,7 +77,7 @@
         <item name="android:layout_marginStart">@dimen/dimen_16dp</item>
         <item name="android:layout_marginEnd">@dimen/dimen_64dp</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/yp_text_gray</item>
+        <item name="android:textColor">@color/yp_gray</item>
         <item name="android:textSize">@dimen/small_text_size</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="layout_constraintStart_toStartOf">parent</item>
@@ -110,6 +110,33 @@
     <style name="TabTextStyle" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textSize">@dimen/text_size</item>
+    </style>
+
+    <style name="TextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="fontWeight">400</item>
+        <item name="android:textSize">@dimen/small_button_text_size</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/corner_radius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/corner_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/corner_radius</item>
+        <item name="boxCornerRadiusTopStart">@dimen/corner_radius</item>
+    </style>
+
+    <style name="TextInputEditText">
+        <item name="fontWeight">400</item>
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:lines">1</item>
+        <item name="android:maxLength">255</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="CreateButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_weight">1</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:textColor">?attr/color</item>
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="android:padding">12dp</item>
     </style>
 
 </resources>

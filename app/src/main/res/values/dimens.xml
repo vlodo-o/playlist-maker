@@ -10,7 +10,7 @@
     <dimen name="button_radius">16dp</dimen>
     <dimen name="small_button_radius">54dp</dimen>
     <dimen name="track_cover_radius">2dp</dimen>
-    <dimen name="full_track_cover_radius">8dp</dimen>
+    <dimen name="corner_radius">8dp</dimen>
     <dimen name="icon_button_padding">10dp</dimen>
     <dimen name="settings_vertical">20dp</dimen>
     <dimen name="button_size">48dp</dimen>
@@ -24,4 +24,5 @@
     <dimen name="dimen_64dp">64dp</dimen>
     <dimen name="dimen_66dp">66dp</dimen>
     <dimen name="error_image_size">120dp</dimen>
+    <dimen name="dimen_under_toolbar">26dp</dimen>
 </resources>

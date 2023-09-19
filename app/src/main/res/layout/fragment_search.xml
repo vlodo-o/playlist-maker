@@ -25,7 +25,7 @@
             android:layout_height="36dp"
             android:background="@drawable/rounded_shape"
             android:drawableStart="@drawable/ic_search"
-            android:drawablePadding="@dimen/dimen_8dp"
+            android:drawablePadding="@dimen/corner_radius"
             android:drawableTint="?attr/colorOnSecondary"
             android:hint="@string/search"
             android:imeOptions="actionDone"

@@ -1,78 +1,100 @@
 package com.practicum.playlistmaker.player.ui.activity
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
+import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
+import com.practicum.playlistmaker.medialib.ui.fragments.playlists.NewPlaylistFragment
+import com.practicum.playlistmaker.medialib.ui.fragments.playlists.PlaylistAdapter
+import com.practicum.playlistmaker.medialib.ui.models.PlaylistsState
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var toolbar: Toolbar
-    private lateinit var coverImageView: ImageView
-    private lateinit var trackNameTextView: TextView
-    private lateinit var trackArtistTextView: TextView
-    private lateinit var trackTimeCountTextView: TextView
-    private lateinit var trackDurationTextView: TextView
-    private lateinit var trackAlbumText: TextView
-    private lateinit var trackAlbumTextView: TextView
-    private lateinit var trackYearTextView: TextView
-    private lateinit var trackGenreTextView: TextView
-    private lateinit var trackCountryTextView: TextView
+    private var _binding: ActivityPlayerBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var saveButton: ImageButton
-    private lateinit var playButton: FloatingActionButton
-    private lateinit var favoriteButton: ImageButton
+    private lateinit var onPlaylistClickDebounce: (PlaylistModel) -> Unit
+    private val playlistAdapter = PlaylistAdapter { onPlaylistClickDebounce(it) }
 
     private lateinit var track: Track
+    private lateinit var playlistName: String
 
     private val viewModel by viewModel<PlayerViewModel>()
 
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player)
+        _binding = ActivityPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        if (Build.VERSION.SDK_INT >= 33) {
-            track = intent.getParcelableExtra(TRACK, Track::class.java)!!
-        }
-        else {
-            @Suppress("DEPRECATION")
-            track = intent.getParcelableExtra(TRACK)!!
-        }
+        track = intent.getParcelableExtra(TRACK)!!
 
-        initViews()
         initListeners()
         setTrackInfo()
 
+        onPlaylistClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, this.lifecycleScope, false) { playlist ->
+            playlistName = playlist.name
+            viewModel.addToPlaylist(playlist, track)
+        }
+
+        binding.playlistsRecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.playlistsRecyclerview.adapter = playlistAdapter
+
         viewModel.playState.observe(this) { playState ->
             if (playState) {
-                playButton.setImageResource(R.drawable.ic_pause)
+                binding.playButton.setImageResource(R.drawable.ic_pause)
             } else {
-                playButton.setImageResource(R.drawable.ic_play)
+                binding.playButton.setImageResource(R.drawable.ic_play)
             }
         }
         viewModel.playProgress.observe(this) { duration ->
-            trackTimeCountTextView.text = duration
+            binding.timeCount.text = duration
         }
 
         viewModel.favoriteState.observe(this) { isFavorite ->
             if (isFavorite) {
-                favoriteButton.setImageResource(R.drawable.favorite_button)
+                binding.favoriteButton.setImageResource(R.drawable.favorite_button)
             }
             else {
-                favoriteButton.setImageResource(R.drawable.not_favorite_button)
+                binding.favoriteButton.setImageResource(R.drawable.not_favorite_button)
             }
         }
+
+        viewModel.playlistsState.observe(this) { state ->
+            if (state is PlaylistsState.Playlists) {
+                playlistAdapter.setPlaylists(state.content)
+                binding.playlistsRecyclerview.visibility = View.VISIBLE
+            } else {
+                binding.playlistsRecyclerview.visibility = View.GONE
+            }
+        }
+
+        viewModel.trackAddedToPlaylist.observe(this) { result ->
+            if (result) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                binding.overlay.visibility = View.GONE
+                Toast.makeText(this, "Добавлено в плейлист $playlistName", Toast.LENGTH_SHORT).show()
+                viewModel.getPlaylists()
+            } else {
+                Toast.makeText(this, "Трек уже добавлен в плейлист $playlistName", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.getPlaylists()
     }
 
     override fun onPause() {
@@ -80,65 +102,96 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.pausePlayer()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.stopPlayer()
-    }
-
-    private fun initViews() {
-        toolbar = findViewById(R.id.toolbar)
-        coverImageView = findViewById(R.id.cover_imageview)
-        trackNameTextView = findViewById(R.id.track_name_textview)
-        trackArtistTextView = findViewById(R.id.track_artist_textview)
-        trackTimeCountTextView = findViewById(R.id.time_count)
-        trackDurationTextView = findViewById(R.id.changeable_duration)
-        trackAlbumText = findViewById(R.id.album)
-        trackAlbumTextView = findViewById(R.id.changeable_album)
-        trackYearTextView = findViewById(R.id.changeable_year)
-        trackGenreTextView = findViewById(R.id.changeable_genre)
-        trackCountryTextView = findViewById(R.id.changeable_country)
-        saveButton = findViewById(R.id.save_button)
-        playButton = findViewById(R.id.play_button)
-        favoriteButton = findViewById(R.id.favorite_button)
-    }
-
     private fun initListeners() {
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             finish()
         }
 
-        playButton.setOnClickListener {
+        binding.playButton.setOnClickListener {
             viewModel.playbackControl(track.previewUrl)
         }
 
-        favoriteButton.setOnClickListener {
+        binding.favoriteButton.setOnClickListener {
             viewModel.favoriteControl(track)
+        }
+
+        bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.playlists_bottom_sheet)).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.saveButton.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            binding.overlay.visibility = View.VISIBLE
+        }
+
+        binding.newPlaylistButton.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                addToBackStack(null)
+                add(R.id.create_playlist_fragment, NewPlaylistFragment())
+            }
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+                    else -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = slideOffset + 1
+            }
+        })
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                binding.playerScrollview.visibility = View.GONE
+                binding.overlay.visibility = View.GONE
+                binding.playlistsBottomSheet.visibility = View.GONE
+                binding.createPlaylistFragment.visibility = View.VISIBLE
+            } else {
+                viewModel.getPlaylists()
+                binding.playerScrollview.visibility = View.VISIBLE
+                if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+                    binding.overlay.visibility = View.GONE
+                } else binding.overlay.visibility = View.VISIBLE
+                binding.playlistsBottomSheet.visibility = View.VISIBLE
+                binding.createPlaylistFragment.visibility = View.GONE
+            }
         }
     }
 
     private fun setTrackInfo() {
-        val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.full_track_cover_radius)
+        val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius)
         Glide.with(this).load(track.getCoverArtwork())
             .placeholder(R.drawable.track_placeholder).centerCrop()
-            .transform(RoundedCorners(cornerRadius)).into(coverImageView)
+            .transform(RoundedCorners(cornerRadius)).into(binding.coverImageview)
 
-        trackNameTextView.text = track.trackName
-        trackArtistTextView.text = track.artistName
-        trackDurationTextView.text = track.trackTime
+        binding.trackNameTextview.text = track.trackName
+        binding.trackArtistTextview.text = track.artistName
+        binding.changeableDuration.text = track.trackTime
         if (track.collectionName.isNotEmpty()) {
-            trackAlbumTextView.text = track.collectionName
+            binding.changeableAlbum.text = track.collectionName
         } else {
-            trackAlbumTextView.visibility = View.GONE
-            trackAlbumText.visibility = View.GONE
+            binding.changeableAlbum.visibility = View.GONE
+            binding.changeableAlbum.visibility = View.GONE
         }
-        trackGenreTextView.text = track.primaryGenreName
-        trackYearTextView.text = track.releaseYear
-        trackCountryTextView.text = track.country
+        binding.changeableGenre.text = track.primaryGenreName
+        binding.changeableYear.text = track.releaseYear
+        binding.changeableCountry.text = track.country
 
         viewModel.checkFavorite(track.trackId)
     }
 
     companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
         const val TRACK = "track"
     }
 }

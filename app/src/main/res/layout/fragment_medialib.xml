@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/colorPrimaryVariant"
     android:orientation="vertical"
-    tools:context=".medialib.ui.MedialibFragment">
+    tools:context=".medialib.ui.fragments.MedialibFragment">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         style="@style/Toolbar"

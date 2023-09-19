@@ -4,14 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.medialib.domain.MedialibInteractor
+import com.practicum.playlistmaker.medialib.domain.FavoriteTrackInteractor
+import com.practicum.playlistmaker.medialib.domain.PlaylistInteractor
+import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
+import com.practicum.playlistmaker.medialib.ui.models.PlaylistsState
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -19,7 +21,8 @@ import java.util.Locale
 
 class PlayerViewModel (
     private val playerInteractor: PlayerInteractor,
-    private val medialibInteractor: MedialibInteractor
+    private val favoriteTrackInteractor: FavoriteTrackInteractor,
+    private val playlistInteractor: PlaylistInteractor
     ): ViewModel() {
 
     private val _playState = MutableLiveData<Boolean>()
@@ -30,6 +33,12 @@ class PlayerViewModel (
 
     private val _favoriteState = MutableLiveData<Boolean>()
     val favoriteState: LiveData<Boolean> = _favoriteState
+
+    private val _playlistsState = MutableLiveData<PlaylistsState>()
+    val playlistsState: LiveData<PlaylistsState> = _playlistsState
+
+    private val _trackAddedToPlaylist = MutableLiveData<Boolean>()
+    val trackAddedToPlaylist: LiveData<Boolean> = _trackAddedToPlaylist
 
     private var isFavorite = false
 
@@ -47,9 +56,10 @@ class PlayerViewModel (
         timerJob?.cancel()
     }
 
-    fun stopPlayer() {
+    override fun onCleared() {
         playerInteractor.stopPlayer()
         _playState.value = false
+        super.onCleared()
     }
 
     fun playbackControl(trackUrl: String) {
@@ -85,14 +95,14 @@ class PlayerViewModel (
             isFavorite = false
             _favoriteState.value = false
             viewModelScope.launch {
-                medialibInteractor.deleteTrack(track.trackId)
+                favoriteTrackInteractor.deleteTrack(track.trackId)
             }
         }
         else {
             isFavorite = true
             _favoriteState.value = true
             viewModelScope.launch {
-                medialibInteractor.saveTrack(track)
+                favoriteTrackInteractor.saveTrack(track)
             }
         }
     }
@@ -100,10 +110,36 @@ class PlayerViewModel (
     fun checkFavorite(trackId: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                medialibInteractor.isFavoriteTrack(trackId).collect {
+                favoriteTrackInteractor.isFavoriteTrack(trackId).collect {
                     isFavorite = it
                     _favoriteState.postValue(isFavorite)
                 }
+            }
+        }
+    }
+
+    fun getPlaylists() {
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistInteractor
+                .getPlaylists()
+                .collect { playlists ->
+                    if (playlists.isNotEmpty()) {
+                        _playlistsState.postValue(PlaylistsState.Playlists(playlists))
+                    } else {
+                        _playlistsState.postValue(PlaylistsState.Empty)
+                    }
+                }
+        }
+    }
+
+    fun addToPlaylist(playlist: PlaylistModel, track: Track) {
+        viewModelScope.launch {
+            if (playlistInteractor.isTrackInPlaylist(playlist, track)) {
+                _trackAddedToPlaylist.postValue(false)
+            }
+            else {
+                playlistInteractor.addTrackToPlaylist(playlist, track)
+                _trackAddedToPlaylist.postValue(true)
             }
         }
     }

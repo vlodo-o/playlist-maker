@@ -2,10 +2,11 @@ package com.practicum.playlistmaker.medialib.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.practicum.playlistmaker.medialib.data.db.entity.TrackEntity.Companion.TABLE_NAME
+import com.practicum.playlistmaker.medialib.data.db.entity.PlaylistTrackEntity.Companion.TABLE_NAME
+
 
 @Entity(tableName = TABLE_NAME)
-data class TrackEntity (
+data class PlaylistTrackEntity(
     @PrimaryKey(autoGenerate = false)
     val trackId: String,
     val trackName: String,
@@ -20,6 +21,6 @@ data class TrackEntity (
     val saveDate: Long
 ) {
     companion object {
-        const val TABLE_NAME = "favorite_track"
+        const val TABLE_NAME = "playlist_track"
     }
 }
