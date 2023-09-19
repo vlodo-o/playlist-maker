@@ -39,12 +39,24 @@ class NewPlaylistFragment : Fragment() {
     private var imageUri: Uri? = null
     private var pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         // Callback вызовется, когда пользователь выберет картинку
+        imageUri = uri
         if (uri != null) {
             Log.d("PhotoPicker", "Выбранный URI: $uri")
             coverImageView.setImageURI(uri)
-            viewModel.saveImageToPrivateStorage(uri)
         } else {
             Log.d("PhotoPicker", "Ничего не выбрано")
+        }
+    }
+
+    val onComplete: () -> Unit = {
+        viewModel.createPlaylist(nameEditText.text.toString(), descriptionEditText.text.toString())
+        val message = getString(R.string.playlist_created, nameEditText.text.toString())
+        if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            requireActivity().supportFragmentManager.popBackStack()
+        } else {
+            findNavController().navigateUp()
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -57,10 +69,6 @@ class NewPlaylistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         initListeners()
-
-        viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
-            imageUri = uri
-        }
 
         val confirmDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(requireContext().getString(R.string.create_fragment_close_title))
@@ -135,15 +143,10 @@ class NewPlaylistFragment : Fragment() {
         }
 
         createButton.setOnClickListener {
-            val playlistName = nameEditText.text.toString()
-            viewModel.createPlaylist(playlistName, descriptionEditText.text.toString(), imageUri.toString())
-            val message = getString(R.string.playlist_created, playlistName)
-            if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                requireActivity().supportFragmentManager.popBackStack()
+            if (imageUri != null) {
+                viewModel.saveImageToPrivateStorage(imageUri!!, onComplete)
             } else {
-                findNavController().navigateUp()
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                onComplete.invoke()
             }
         }
     }

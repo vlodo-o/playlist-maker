@@ -9,6 +9,7 @@ import com.practicum.playlistmaker.medialib.domain.PlaylistInteractor
 import com.practicum.playlistmaker.medialib.ui.models.PlaylistsState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlaylistsViewModel(
     private val playlistInteractor: PlaylistInteractor
@@ -17,8 +18,8 @@ class PlaylistsViewModel(
     private val _playlistsState = MutableLiveData<PlaylistsState>()
     val playlistsState: LiveData<PlaylistsState> = _playlistsState
 
-    private val _imageUri = MutableLiveData<Uri>()
-    val imageUri: LiveData<Uri> = _imageUri
+    private val _imageUri = MutableLiveData<Uri?>()
+    val imageUri: LiveData<Uri?> = _imageUri
 
 
     fun getPlaylists() {
@@ -35,16 +36,19 @@ class PlaylistsViewModel(
         }
     }
 
-    fun createPlaylist(name:String, description:String, imagePath:String) {
+    fun createPlaylist(name:String, description:String) {
         viewModelScope.launch(Dispatchers.IO) {
-            playlistInteractor.createPlaylist(name, description, imagePath)
+            playlistInteractor.createPlaylist(name, description, imageUri.value.toString())
         }
     }
 
-    fun saveImageToPrivateStorage(uri: Uri) {
+    fun saveImageToPrivateStorage(uri: Uri, onComplete: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val privateUri = playlistInteractor.saveImageToPrivateStorage(uri, "cover_${System.currentTimeMillis()}.jpg")
             _imageUri.postValue(privateUri)
+            withContext(Dispatchers.Main) {
+                onComplete()
+            }
         }
     }
 
