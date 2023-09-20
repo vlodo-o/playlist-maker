@@ -24,4 +24,6 @@ interface PlaylistInteractor {
     suspend fun deleteTrackFromPlaylist(playlist: PlaylistModel, trackId: String)
 
     suspend fun getPlaylistDuration(playlist: PlaylistModel): Int
+
+    fun sharePlaylist(text: String)
 }

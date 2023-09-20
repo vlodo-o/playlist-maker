@@ -12,10 +12,10 @@ class ExternalNavigatorImpl (private val context: Context) : ExternalNavigator {
     val emailSubject = context.getString(R.string.mail_subject)
     val emailText = context.getString(R.string.mail_text)
 
-    override fun shareLink(shareAppLink: String) {
+    override fun shareLink(shareText: String) {
         Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, shareAppLink)
+            putExtra(Intent.EXTRA_TEXT, shareText)
             type = "text/plain"
             context.startActivity(Intent.createChooser(this, null).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }

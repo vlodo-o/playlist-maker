@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
@@ -101,6 +102,14 @@ class PlaylistContentFragment : Fragment() {
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
+
+        binding.shareButton.setOnClickListener {
+            sharePlaylist()
+        }
+
+        binding.buttonShare.setOnClickListener {
+            sharePlaylist()
+        }
     }
 
     fun onLongClick(track: Track) {
@@ -115,6 +124,16 @@ class PlaylistContentFragment : Fragment() {
                     }
                 }.setPositiveButton(R.string.cancel) { _, _ -> }
         confirmDialog.show()
+    }
+
+    fun sharePlaylist() {
+        if (!viewModel.sharePlaylist(playlist)) {
+            Toast.makeText(
+                requireContext(),
+                "В этом плейлисте нет списка треков, которым можно поделиться",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     companion object {

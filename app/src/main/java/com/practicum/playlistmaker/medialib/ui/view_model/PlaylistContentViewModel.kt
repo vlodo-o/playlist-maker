@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.medialib.ui.view_model
 
 import android.icu.text.SimpleDateFormat
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -53,13 +54,13 @@ private val playlistInteractor: PlaylistInteractor
             playlistInteractor.deleteTrackFromPlaylist(playlist, trackId)
             withContext(Dispatchers.Main) {
                 getAllPlaylistTracks(playlist.id)
-                getTrackCount(playlist.tracksCount.dec())
+                _tracksCount.postValue(getTrackCount(playlist.tracksCount.dec()))
                 sumTracksTime(playlist)
             }
         }
     }
 
-    fun getTrackCount(count: Int) {
+    fun getTrackCount(count: Int): String {
         val lastDigit = count % 10
         val lastTwoDigits = count % 100
 
@@ -70,7 +71,23 @@ private val playlistInteractor: PlaylistInteractor
             else -> "треков"
         }
 
-        _tracksCount.postValue("$count $ending")
+        return "$count $ending"
+    }
+
+    fun sharePlaylist(playlist: PlaylistModel): Boolean {
+        if (playlist.tracks.isEmpty()) return false
+        else {
+            var text = """${playlist.name}
+${playlist.description}
+${getTrackCount(playlist.tracksCount)} """
+            var number = 0
+            for (track in tracks) {
+                number++
+                text +="\n$number. ${track.artistName} - ${track.trackName} (${track.trackTime})"
+            }
+            playlistInteractor.sharePlaylist(text)
+            return true
+        }
     }
 
 }

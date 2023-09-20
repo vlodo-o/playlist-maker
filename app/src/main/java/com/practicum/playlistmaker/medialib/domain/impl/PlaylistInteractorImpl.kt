@@ -5,10 +5,12 @@ import com.practicum.playlistmaker.medialib.domain.PlaylistInteractor
 import com.practicum.playlistmaker.medialib.domain.PlaylistRepository
 import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.sharing.data.ExternalNavigator
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistInteractorImpl(
-    private val playlistRepository: PlaylistRepository
+    private val playlistRepository: PlaylistRepository,
+    private val externalNavigator: ExternalNavigator
 ): PlaylistInteractor {
 
     override suspend fun createPlaylist(name: String, description: String, imagePath: String) {
@@ -45,5 +47,9 @@ class PlaylistInteractorImpl(
 
     override suspend fun getPlaylistDuration(playlist: PlaylistModel): Int {
         return playlistRepository.getPlaylistDuration(playlist)
+    }
+
+    override fun sharePlaylist(text: String) {
+        externalNavigator.shareLink(text)
     }
 }
