@@ -12,6 +12,9 @@ class EditPlaylistViewModel(
 
     fun updatePlaylist(playlistModel: PlaylistModel) {
         viewModelScope.launch(Dispatchers.IO) {
+            if (imageUri.value != null) {
+                    playlistModel.imagePath = imageUri.value.toString()
+            }
             playlistInteractor.updatePlaylist(playlistModel)
         }
     }

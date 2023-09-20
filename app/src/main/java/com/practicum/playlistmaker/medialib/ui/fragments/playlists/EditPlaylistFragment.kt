@@ -58,7 +58,6 @@ class EditPlaylistFragment: NewPlaylistFragment() {
 
         binding.createPlaylistButton.setOnClickListener {
             saveNewInfo()
-            findNavController().navigateUp()
         }
     }
 
@@ -73,7 +72,6 @@ class EditPlaylistFragment: NewPlaylistFragment() {
         playlist.description = binding.playlistDescription.text.toString()
         if (imageUri != null) {
             viewModel.saveImageToPrivateStorage(imageUri!!, onComplete)
-            playlist.imagePath = imageUri.toString()
         } else {
             onComplete.invoke()
         }
