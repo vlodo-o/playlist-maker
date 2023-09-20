@@ -8,6 +8,7 @@ import android.os.Environment
 import android.util.Log
 import com.practicum.playlistmaker.medialib.data.converters.PlaylistDbConverter
 import com.practicum.playlistmaker.medialib.data.converters.PlaylistTrackDbConverter
+import com.practicum.playlistmaker.medialib.data.converters.TrackListConverter
 import com.practicum.playlistmaker.medialib.data.db.AppDatabase
 import com.practicum.playlistmaker.medialib.data.db.entity.PlaylistEntity
 import com.practicum.playlistmaker.medialib.domain.PlaylistRepository
@@ -25,6 +26,7 @@ class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val playlistDbConverter: PlaylistDbConverter,
     private val playlistTrackDbConverter: PlaylistTrackDbConverter,
+    private val trackListConverter: TrackListConverter,
     private val context: Context
 ): PlaylistRepository {
 
@@ -77,20 +79,34 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun getAllPlaylistTracks(playlistId: Int): Flow<List<Track>> = flow {
-        val trackIds = appDatabase.playlistDao().getAllPlaylistTracksId(playlistId)
+        val trackIds = trackListConverter.jsonToList(appDatabase.playlistDao().getAllPlaylistTracksId(playlistId))
         val resultTracks: ArrayList<Track> = arrayListOf()
-        for (id in trackIds) {
-            val track = appDatabase.playlistTrackDao().getPlaylistTrack(id.dropLast(2).drop(2))
-            Log.d("playlist_track", id + " " + track.toString())
+        trackIds.forEach { id ->
+            val track = appDatabase.playlistTrackDao().getPlaylistTrack(id)
             if (track != null) resultTracks.add(playlistTrackDbConverter.map(track))
         }
         emit(resultTracks)
     }
 
+    override suspend fun deleteTrackFromPlaylist(playlist: PlaylistModel, trackId: String) {
+        playlist.tracks.remove(trackId)
+        playlist.tracksCount.dec()
+        val playlists = appDatabase.playlistDao().updatePlaylistAndGetAll(playlistDbConverter.map(playlist))
+        if (!trackInPlaylists(playlists, trackId)) appDatabase.playlistTrackDao().deletePlaylistTrack(trackId)
+    }
+
     private suspend fun updatePlaylist(playlist: PlaylistModel) {
         appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlist))
     }
+
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<PlaylistModel> {
         return playlists.map {playlist -> playlistDbConverter.map(playlist)}
+    }
+
+    private fun trackInPlaylists(playlistList: List<PlaylistEntity>, trackId: String): Boolean {
+        for (playlist in playlistList) {
+            if (playlist.tracks.contains(trackId)) return true
+        }
+        return false
     }
 }

@@ -21,4 +21,6 @@ interface PlaylistRepository {
     fun isTrackInPlaylist(playlist: PlaylistModel, track: Track): Boolean
 
     suspend fun getAllPlaylistTracks(playlistId: Int): Flow<List<Track>>
+
+    suspend fun deleteTrackFromPlaylist(playlist: PlaylistModel, trackId: String)
 }

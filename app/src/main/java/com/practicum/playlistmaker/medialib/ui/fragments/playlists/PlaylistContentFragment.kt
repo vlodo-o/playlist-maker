@@ -71,6 +71,10 @@ class PlaylistContentFragment : Fragment() {
             trackListAdapter.setTracks(tracks)
         }
 
+        viewModel.tracksCount.observe(viewLifecycleOwner) { tracksCount ->
+            binding.playlistTracksCount.text = tracksCount.toString()
+        }
+
     }
 
     private fun setPlaylistInfo(playlistModel: PlaylistModel) {
@@ -103,7 +107,7 @@ class PlaylistContentFragment : Fragment() {
                 .setMessage("Вы уверены, что хотите удалить трек из плейлиста?")
                 .setNegativeButton("Удалить") { _, _ ->
                     viewLifecycleOwner.lifecycleScope.launch {
-                        viewModel.deleteTrackFromPlaylist(playlist.id, track.trackId!!)
+                        viewModel.deleteTrackFromPlaylist(playlist, track.trackId!!)
                     }
                 }.setPositiveButton(R.string.cancel) { _, _ -> }
         confirmDialog.show()

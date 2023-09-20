@@ -20,4 +20,7 @@ interface PlaylistTrackDao {
 
     @Query("SELECT * FROM ${PlaylistTrackEntity.TABLE_NAME} WHERE trackId = :trackId")
     fun getPlaylistTrack(trackId: String): PlaylistTrackEntity
+
+    @Query("DELETE FROM ${PlaylistTrackEntity.TABLE_NAME} WHERE trackId = :trackId")
+    suspend fun deleteTrack(trackId: String)
 }

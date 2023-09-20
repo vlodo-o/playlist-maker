@@ -8,7 +8,6 @@ import com.practicum.playlistmaker.medialib.domain.PlaylistInteractor
 import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -20,6 +19,9 @@ private val playlistInteractor: PlaylistInteractor
 
     private val _playlistTracks = MutableLiveData<List<Track>>()
     val playlistTracks: LiveData<List<Track>> = _playlistTracks
+
+    private val _tracksCount = MutableLiveData<Int>()
+    val tracksCount: LiveData<Int> = _tracksCount
 
     fun sumTracksTime(playlistModel: PlaylistModel): String {
         return ""
@@ -36,8 +38,14 @@ private val playlistInteractor: PlaylistInteractor
         }
     }
 
-    fun deleteTrackFromPlaylist(playlistId: Int, trackId: String) {
-
+    fun deleteTrackFromPlaylist(playlist: PlaylistModel, trackId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistInteractor.deleteTrackFromPlaylist(playlist, trackId)
+            withContext(Dispatchers.Main) {
+                getAllPlaylistTracks(playlist.id)
+                _tracksCount.postValue(playlist.tracksCount.dec())
+            }
+        }
     }
 
 }
