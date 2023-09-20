@@ -20,9 +20,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
@@ -97,13 +95,13 @@ class PlaylistRepositoryImpl(
         if (!trackInPlaylists(playlists, trackId)) appDatabase.playlistTrackDao().deletePlaylistTrack(trackId)
     }
 
-    override suspend fun getPlaylistDuration(playlist: PlaylistModel): String {
+    override suspend fun getPlaylistDuration(playlist: PlaylistModel): Int {
         val trackList = playlist.tracks.map { appDatabase.playlistTrackDao().getPlaylistTrack(it) }
         var timeSum = 0
         for (track in trackList) {
             timeSum += track.trackTimeMillis
         }
-        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(timeSum)
+        return timeSum
     }
 
     private suspend fun updatePlaylist(playlist: PlaylistModel) {

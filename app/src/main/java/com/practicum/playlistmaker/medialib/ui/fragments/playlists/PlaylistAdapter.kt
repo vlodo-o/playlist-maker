@@ -31,7 +31,7 @@ class PlaylistAdapter (
 
         fun bind(model: PlaylistModel) {
             playlistName.text = model.name
-            tracksCount.text = model.tracksCount.toString()
+            tracksCount.text =  getTrackCount(model.tracksCount)
             val cornerRadius = itemView.resources.getDimensionPixelSize(R.dimen.corner_radius)
             val file = File(filePath, model.imagePath.toUri().lastPathSegment)
             Glide.with(itemView)
@@ -40,6 +40,20 @@ class PlaylistAdapter (
                 .centerCrop()
                 .transform(RoundedCorners(cornerRadius))
                 .into(playlistCover)
+        }
+
+        fun getTrackCount(count: Int): String {
+            val lastDigit = count % 10
+            val lastTwoDigits = count % 100
+
+            val ending = when {
+                lastDigit == 1 -> "трек"
+                lastDigit in 2..4 -> "трека"
+                lastTwoDigits in 11..19 -> "треков"
+                else -> "треков"
+            }
+
+            return "$count $ending"
         }
     }
 

@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.medialib.domain.PlaylistInteractor
-import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
 import com.practicum.playlistmaker.medialib.ui.models.PlaylistsState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +20,6 @@ class PlaylistsViewModel(
 
     private val _imageUri = MutableLiveData<Uri?>()
     val imageUri: LiveData<Uri?> = _imageUri
-
 
     fun getPlaylists() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -52,4 +50,6 @@ class PlaylistsViewModel(
             }
         }
     }
+
+
 }

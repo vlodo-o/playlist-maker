@@ -43,7 +43,7 @@ class PlaylistInteractorImpl(
         playlistRepository.deleteTrackFromPlaylist(playlist, trackId)
     }
 
-    override suspend fun getPlaylistDuration(playlist: PlaylistModel): String {
+    override suspend fun getPlaylistDuration(playlist: PlaylistModel): Int {
         return playlistRepository.getPlaylistDuration(playlist)
     }
 }

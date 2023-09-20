@@ -72,7 +72,7 @@ class PlaylistContentFragment : Fragment() {
         }
 
         viewModel.tracksCount.observe(viewLifecycleOwner) { tracksCount ->
-            binding.playlistTracksCount.text = tracksCount.toString()
+            binding.playlistTracksCount.text = tracksCount
         }
 
         viewModel.playlistDuration.observe(viewLifecycleOwner) { duration ->
@@ -94,6 +94,7 @@ class PlaylistContentFragment : Fragment() {
         binding.playlistDescription.text = playlistModel.description
         binding.playlistTracksCount.text = playlistModel.tracksCount.toString()
         viewModel.sumTracksTime(playlistModel)
+        viewModel.getTrackCount(playlistModel.tracksCount)
     }
 
     private fun setListeners() {
