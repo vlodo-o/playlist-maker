@@ -25,19 +25,19 @@ import com.practicum.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.practicum.playlistmaker.medialib.ui.view_model.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlaylistFragment : Fragment() {
+open class NewPlaylistFragment : Fragment() {
 
-    private var _binding: FragmentNewPlaylistBinding? = null
-    private val binding get() = _binding!!
-    private val viewModel by viewModel<PlaylistsViewModel>()
+    var _binding: FragmentNewPlaylistBinding? = null
+    val binding get() = _binding!!
+    open val viewModel by viewModel<PlaylistsViewModel>()
 
     private lateinit var coverImageView: ImageView
     private lateinit var nameEditText: TextInputEditText
     private lateinit var descriptionEditText: TextInputEditText
     private lateinit var createButton: Button
 
-    private var imageUri: Uri? = null
-    private var pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+    open var imageUri: Uri? = null
+    open  var pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         // Callback вызовется, когда пользователь выберет картинку
         imageUri = uri
         if (uri != null) {
@@ -48,7 +48,7 @@ class NewPlaylistFragment : Fragment() {
         }
     }
 
-    val onComplete: () -> Unit = {
+    open val onComplete: () -> Unit = {
         viewModel.createPlaylist(nameEditText.text.toString(), descriptionEditText.text.toString())
         val message = getString(R.string.playlist_created, nameEditText.text.toString())
         if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
@@ -109,7 +109,7 @@ class NewPlaylistFragment : Fragment() {
         createButton = binding.createPlaylistButton
     }
 
-    private fun initListeners() {
+    open fun initListeners() {
         val textWatcher = object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
@@ -151,7 +151,7 @@ class NewPlaylistFragment : Fragment() {
         }
     }
 
-    private fun navigateBack() {
+    open fun navigateBack() {
         if (requireActivity().supportFragmentManager.backStackEntryCount > 0) {
             requireActivity().supportFragmentManager.popBackStack()
         } else {

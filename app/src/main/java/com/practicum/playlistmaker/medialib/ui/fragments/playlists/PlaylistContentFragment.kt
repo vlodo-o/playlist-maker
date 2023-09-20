@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
@@ -14,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistContentBinding
@@ -42,6 +44,8 @@ class PlaylistContentFragment : Fragment() {
         longClickListener = { onLongClick(it) }
     )
 
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
     private lateinit var playlist: PlaylistModel
@@ -56,9 +60,12 @@ class PlaylistContentFragment : Fragment() {
         playlist = (arguments?.getSerializable(PLAYLIST_MODEL) as PlaylistModel)
 
         onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
-            Log.d("trackclick", "fffff")
             val bundle = bundleOf(PlayerActivity.TRACK to track)
             findNavController().navigate(R.id.action_playlistContentFragment_to_playerActivity, bundle)
+        }
+
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistMoreBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
         }
 
         setPlaylistInfo(playlist)
@@ -74,6 +81,7 @@ class PlaylistContentFragment : Fragment() {
 
         viewModel.tracksCount.observe(viewLifecycleOwner) { tracksCount ->
             binding.playlistTracksCount.text = tracksCount
+            binding.playlistItem.tracksCountTextview.text = tracksCount
         }
 
         viewModel.playlistDuration.observe(viewLifecycleOwner) { duration ->
@@ -93,9 +101,18 @@ class PlaylistContentFragment : Fragment() {
 
         binding.playlistName.text = playlistModel.name
         binding.playlistDescription.text = playlistModel.description
-        binding.playlistTracksCount.text = playlistModel.tracksCount.toString()
+        binding.playlistTracksCount.text = viewModel.getTrackCount(playlistModel.tracksCount)
         viewModel.sumTracksTime(playlistModel)
-        viewModel.getTrackCount(playlistModel.tracksCount)
+
+        Glide.with(requireContext())
+            .load(file)
+            .placeholder(R.drawable.track_placeholder)
+            .centerCrop()
+            .into(binding.playlistItem.playlistCoverImageview)
+
+        binding.playlistItem.playlistNameTextview.text = playlistModel.name
+        binding.playlistItem.tracksCountTextview.text = viewModel.getTrackCount(playlistModel.tracksCount)
+
     }
 
     private fun setListeners() {
@@ -110,10 +127,24 @@ class PlaylistContentFragment : Fragment() {
         binding.buttonShare.setOnClickListener {
             sharePlaylist()
         }
+
+        binding.moreButton.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        binding.deletePlaylistButton.setOnClickListener {
+            deletePLaylist()
+        }
+
+        binding.editInfoButton.setOnClickListener {
+            val bundle = bundleOf(
+                PLAYLIST_MODEL to playlist
+            )
+            findNavController().navigate(R.id.action_playlistContentFragment_to_editPlaylistFragment, bundle)
+        }
     }
 
     fun onLongClick(track: Track) {
-        Log.d("longtrackclick", "fffff")
         confirmDialog =
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Удалить трек")
@@ -134,6 +165,21 @@ class PlaylistContentFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    fun deletePLaylist() {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        confirmDialog =
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Удалить плейлист")
+                .setMessage("Хотите удалить плейлист?")
+                .setNegativeButton("Нет") { _, _ ->
+
+                }.setPositiveButton("Да") { _, _ ->
+                    viewModel.deletePlaylist(playlist)
+                    findNavController().navigateUp()
+                }
+        confirmDialog.show()
     }
 
     companion object {

@@ -152,7 +152,6 @@
         android:layout_height="match_parent"
         android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
-        android:visibility="gone"
         app:behavior_hideable="true"
         app:behavior_peekHeight="380dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
@@ -165,7 +164,7 @@
             />
 
         <include
-            android:id="@+id/playlist_item_player"
+            android:id="@+id/playlist_item"
             layout="@layout/playlist_horizontal_list_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -186,7 +185,7 @@
             android:textSize="@dimen/text_size" />
 
         <TextView
-            android:id="@+id/text_view_edit_info"
+            android:id="@+id/edit_info_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -199,7 +198,7 @@
             android:textSize="@dimen/text_size" />
 
         <TextView
-            android:id="@+id/text_view_delete_playlist"
+            android:id="@+id/delete_playlist_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"

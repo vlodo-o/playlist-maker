@@ -42,8 +42,8 @@ class PlaylistRepositoryImpl(
         appDatabase.playlistDao().insertPlaylist(playlist)
     }
 
-    override suspend fun deletePlaylist(playlistId: Int) {
-        appDatabase.playlistDao().deletePlaylist(playlistId)
+    override suspend fun deletePlaylist(playlist: PlaylistModel) {
+        appDatabase.playlistDao().deletePlaylist(playlist.id)
     }
 
     override suspend fun getPlaylists(): Flow<List<PlaylistModel>> = flow {
@@ -104,7 +104,7 @@ class PlaylistRepositoryImpl(
         return timeSum
     }
 
-    private suspend fun updatePlaylist(playlist: PlaylistModel) {
+    override suspend fun updatePlaylist(playlist: PlaylistModel) {
         appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlist))
     }
 

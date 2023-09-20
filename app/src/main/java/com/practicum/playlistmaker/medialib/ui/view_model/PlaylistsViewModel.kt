@@ -11,17 +11,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PlaylistsViewModel(
+open class PlaylistsViewModel(
     private val playlistInteractor: PlaylistInteractor
 ): ViewModel() {
 
     private val _playlistsState = MutableLiveData<PlaylistsState>()
-    val playlistsState: LiveData<PlaylistsState> = _playlistsState
+    open val playlistsState: LiveData<PlaylistsState> = _playlistsState
 
     private val _imageUri = MutableLiveData<Uri?>()
-    val imageUri: LiveData<Uri?> = _imageUri
+    open val imageUri: LiveData<Uri?> = _imageUri
 
-    fun getPlaylists() {
+    open fun getPlaylists() {
         viewModelScope.launch(Dispatchers.IO) {
             playlistInteractor
                 .getPlaylists()
@@ -35,13 +35,13 @@ class PlaylistsViewModel(
         }
     }
 
-    fun createPlaylist(name:String, description:String) {
+    open fun createPlaylist(name:String, description:String) {
         viewModelScope.launch(Dispatchers.IO) {
             playlistInteractor.createPlaylist(name, description, imageUri.value.toString())
         }
     }
 
-    fun saveImageToPrivateStorage(uri: Uri, onComplete: () -> Unit) {
+    open fun saveImageToPrivateStorage(uri: Uri, onComplete: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val privateUri = playlistInteractor.saveImageToPrivateStorage(uri, "cover_${System.currentTimeMillis()}.jpg")
             _imageUri.postValue(privateUri)

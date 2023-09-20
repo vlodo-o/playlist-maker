@@ -60,6 +60,12 @@ private val playlistInteractor: PlaylistInteractor
         }
     }
 
+    fun deletePlaylist(playlist: PlaylistModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistInteractor.deletePlaylist(playlist)
+        }
+    }
+
     fun getTrackCount(count: Int): String {
         val lastDigit = count % 10
         val lastTwoDigits = count % 100

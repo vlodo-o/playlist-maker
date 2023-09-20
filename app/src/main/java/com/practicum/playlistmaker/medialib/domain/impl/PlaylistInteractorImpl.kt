@@ -13,12 +13,16 @@ class PlaylistInteractorImpl(
     private val externalNavigator: ExternalNavigator
 ): PlaylistInteractor {
 
+    override suspend fun updatePlaylist(playlist: PlaylistModel) {
+        playlistRepository.updatePlaylist(playlist)
+    }
+
     override suspend fun createPlaylist(name: String, description: String, imagePath: String) {
         playlistRepository.createPlaylist(name, description, imagePath)
     }
 
-    override suspend fun deletePlaylist(playlistId: Int) {
-        playlistRepository.deletePlaylist(playlistId)
+    override suspend fun deletePlaylist(playlist: PlaylistModel) {
+        playlistRepository.deletePlaylist(playlist)
     }
 
     override suspend fun getPlaylists(): Flow<List<PlaylistModel>> {
