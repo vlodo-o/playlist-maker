@@ -43,8 +43,8 @@ class SearchFragment : Fragment() {
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
 
-    private val trackListAdapter = TrackListAdapter { onTrackClickDebounce(it) }
-    private val trackHistoryAdapter = TrackListAdapter { onTrackClickDebounce(it) }
+    private val trackListAdapter = TrackListAdapter (clickListener = { onTrackClickDebounce(it) })
+    private val trackHistoryAdapter = TrackListAdapter (clickListener = { onTrackClickDebounce(it) })
 
     private var searchText = ""
 

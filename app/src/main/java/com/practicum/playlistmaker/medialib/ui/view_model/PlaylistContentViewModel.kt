@@ -23,8 +23,14 @@ private val playlistInteractor: PlaylistInteractor
     private val _tracksCount = MutableLiveData<Int>()
     val tracksCount: LiveData<Int> = _tracksCount
 
-    fun sumTracksTime(playlistModel: PlaylistModel): String {
-        return ""
+    private val _playlistDuration = MutableLiveData<String>()
+    val playlistDuration: LiveData<String> = _playlistDuration
+
+    fun sumTracksTime(playlistModel: PlaylistModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val duration = playlistInteractor.getPlaylistDuration(playlistModel)
+            _playlistDuration.postValue(duration)
+        }
     }
 
     fun getAllPlaylistTracks(playlistId: Int) {
@@ -44,6 +50,7 @@ private val playlistInteractor: PlaylistInteractor
             withContext(Dispatchers.Main) {
                 getAllPlaylistTracks(playlist.id)
                 _tracksCount.postValue(playlist.tracksCount.dec())
+                sumTracksTime(playlist)
             }
         }
     }

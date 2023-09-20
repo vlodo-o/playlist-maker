@@ -23,4 +23,6 @@ interface PlaylistRepository {
     suspend fun getAllPlaylistTracks(playlistId: Int): Flow<List<Track>>
 
     suspend fun deleteTrackFromPlaylist(playlist: PlaylistModel, trackId: String)
+
+    suspend fun getPlaylistDuration(playlist: PlaylistModel): String
 }
