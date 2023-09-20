@@ -19,4 +19,6 @@ interface PlaylistRepository {
     suspend fun saveImageToPrivateStorage(uri: Uri, name: String): Uri
 
     fun isTrackInPlaylist(playlist: PlaylistModel, track: Track): Boolean
+
+    suspend fun getAllPlaylistTracks(playlistId: Int): Flow<List<Track>>
 }

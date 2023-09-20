@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.medialib.domain.PlaylistInteractor
+import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
 import com.practicum.playlistmaker.medialib.ui.models.PlaylistsState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,5 +52,4 @@ class PlaylistsViewModel(
             }
         }
     }
-
 }

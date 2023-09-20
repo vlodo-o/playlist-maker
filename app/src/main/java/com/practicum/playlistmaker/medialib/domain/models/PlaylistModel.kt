@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.medialib.domain.models
 
-import com.practicum.playlistmaker.search.domain.models.Track
+import java.io.Serializable
 
 data class PlaylistModel (
     val id: Int,
@@ -9,4 +9,4 @@ data class PlaylistModel (
     val imagePath: String,
     val tracks: MutableList<String>,
     var tracksCount: Int
-)
+): Serializable

@@ -19,5 +19,5 @@ interface PlaylistTrackDao {
     fun getAllPlaylistTrack(): List<PlaylistTrackEntity>
 
     @Query("SELECT * FROM ${PlaylistTrackEntity.TABLE_NAME} WHERE trackId = :trackId")
-    fun getPlaylistTrack(trackId: String): List<PlaylistTrackEntity>
+    fun getPlaylistTrack(trackId: String): PlaylistTrackEntity
 }

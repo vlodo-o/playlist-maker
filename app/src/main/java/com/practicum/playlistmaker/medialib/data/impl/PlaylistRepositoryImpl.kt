@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import com.practicum.playlistmaker.medialib.data.converters.PlaylistDbConverter
 import com.practicum.playlistmaker.medialib.data.converters.PlaylistTrackDbConverter
 import com.practicum.playlistmaker.medialib.data.db.AppDatabase
@@ -73,6 +74,17 @@ class PlaylistRepositoryImpl(
 
     override fun isTrackInPlaylist(playlist: PlaylistModel, track: Track): Boolean {
         return playlist.tracks.contains(track.trackId)
+    }
+
+    override suspend fun getAllPlaylistTracks(playlistId: Int): Flow<List<Track>> = flow {
+        val trackIds = appDatabase.playlistDao().getAllPlaylistTracksId(playlistId)
+        val resultTracks: ArrayList<Track> = arrayListOf()
+        for (id in trackIds) {
+            val track = appDatabase.playlistTrackDao().getPlaylistTrack(id.dropLast(2).drop(2))
+            Log.d("playlist_track", id + " " + track.toString())
+            if (track != null) resultTracks.add(playlistTrackDbConverter.map(track))
+        }
+        emit(resultTracks)
     }
 
     private suspend fun updatePlaylist(playlist: PlaylistModel) {

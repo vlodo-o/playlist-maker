@@ -12,7 +12,8 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
 
 class TrackListAdapter(
-    private val clickListener: TrackClickListener? = null
+    private val clickListener: TrackClickListener? = null,
+    private val longClickListener: TrackLongClickListener? = null
 ) : RecyclerView.Adapter<TrackListAdapter.TrackViewHolder> () {
 
     var trackList = ArrayList<Track>()
@@ -45,7 +46,15 @@ class TrackListAdapter(
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(trackList[position])
-        holder.itemView.setOnClickListener { clickListener?.onTrackClick(trackList.get(position)) }
+        holder.itemView.setOnClickListener {
+            clickListener?.onTrackClick(trackList[position])
+        }
+        if (longClickListener != null) {
+            holder.itemView.setOnLongClickListener {
+                longClickListener.onTrackLongClick(trackList[position])
+                return@setOnLongClickListener true
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -54,6 +63,10 @@ class TrackListAdapter(
 
     fun interface TrackClickListener {
         fun onTrackClick(track: Track)
+    }
+
+    fun interface TrackLongClickListener {
+        fun onTrackLongClick(track: Track)
     }
 
     fun setTracks(tracks: List<Track>?) {

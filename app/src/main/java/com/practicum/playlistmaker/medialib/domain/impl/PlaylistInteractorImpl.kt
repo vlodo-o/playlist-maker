@@ -34,4 +34,8 @@ class PlaylistInteractorImpl(
     override fun isTrackInPlaylist(playlist: PlaylistModel, track: Track): Boolean {
         return playlistRepository.isTrackInPlaylist(playlist, track)
     }
+
+    override suspend fun getAllPlaylistTracks(playlistId: Int): Flow<List<Track>> {
+        return playlistRepository.getAllPlaylistTracks(playlistId)
+    }
 }
