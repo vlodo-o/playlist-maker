@@ -90,7 +90,7 @@ class PlaylistRepositoryImpl(
 
     override suspend fun deleteTrackFromPlaylist(playlist: PlaylistModel, trackId: String) {
         playlist.tracks.remove(trackId)
-        playlist.tracksCount.dec()
+        playlist.tracksCount -= 1
         val playlists = appDatabase.playlistDao().updatePlaylistAndGetAll(playlistDbConverter.map(playlist))
         if (!trackInPlaylists(playlists, trackId)) appDatabase.playlistTrackDao().deletePlaylistTrack(trackId)
     }

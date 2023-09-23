@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.medialib.ui.fragments.playlists
 
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,10 +20,8 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistContentBinding
 import com.practicum.playlistmaker.medialib.domain.models.PlaylistModel
 import com.practicum.playlistmaker.medialib.ui.view_model.PlaylistContentViewModel
-import com.practicum.playlistmaker.medialib.ui.view_model.PlaylistsViewModel
 import com.practicum.playlistmaker.player.ui.activity.PlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.fragment.SearchFragment
 import com.practicum.playlistmaker.search.ui.fragment.TrackListAdapter
 import com.practicum.playlistmaker.utils.debounce
 import kotlinx.coroutines.launch
@@ -38,15 +35,15 @@ class PlaylistContentFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModel<PlaylistContentViewModel>()
 
-    private lateinit var onTrackClickDebounce: (Track) -> Unit
+    private var onTrackClickDebounce: ((Track) -> Unit)? = null
     private val trackListAdapter = TrackListAdapter (
-        clickListener = { onTrackClickDebounce(it) },
+        clickListener = { onTrackClickDebounce?.let { it1 -> it1(it) } },
         longClickListener = { onLongClick(it) }
     )
 
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
-    private lateinit var confirmDialog: MaterialAlertDialogBuilder
+    private var confirmDialog: MaterialAlertDialogBuilder? = null
 
     private lateinit var playlist: PlaylistModel
 
@@ -59,7 +56,7 @@ class PlaylistContentFragment : Fragment() {
         super.onCreate(savedInstanceState)
         playlist = (arguments?.getSerializable(PLAYLIST_MODEL) as PlaylistModel)
 
-        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY_MILLIS, viewLifecycleOwner.lifecycleScope, false) { track ->
             val bundle = bundleOf(PlayerActivity.TRACK to track)
             findNavController().navigate(R.id.action_playlistContentFragment_to_playerActivity, bundle)
         }
@@ -71,7 +68,7 @@ class PlaylistContentFragment : Fragment() {
         setPlaylistInfo(playlist)
         setListeners()
 
-        binding.tracksRecyclerview.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.tracksRecyclerview.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, true)
         binding.tracksRecyclerview.adapter = trackListAdapter
         viewModel.getAllPlaylistTracks(playlist.id)
 
@@ -86,6 +83,14 @@ class PlaylistContentFragment : Fragment() {
 
         viewModel.playlistDuration.observe(viewLifecycleOwner) { duration ->
             binding.playlistDuration.text = duration
+        }
+
+        if (playlist.tracksCount == 0) {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.no_tracks),
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
     }
@@ -112,7 +117,6 @@ class PlaylistContentFragment : Fragment() {
 
         binding.playlistItem.playlistNameTextview.text = playlistModel.name
         binding.playlistItem.tracksCountTextview.text = viewModel.getTrackCount(playlistModel.tracksCount)
-
     }
 
     private fun setListeners() {
@@ -129,7 +133,7 @@ class PlaylistContentFragment : Fragment() {
         }
 
         binding.moreButton.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
         binding.deletePlaylistButton.setOnClickListener {
@@ -147,43 +151,44 @@ class PlaylistContentFragment : Fragment() {
     fun onLongClick(track: Track) {
         confirmDialog =
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Удалить трек")
-                .setMessage("Вы уверены, что хотите удалить трек из плейлиста?")
-                .setNegativeButton("Удалить") { _, _ ->
+                .setTitle(getString(R.string.delete_track))
+                .setMessage(getString(R.string.sure_delete_track))
+                .setPositiveButton(getString(R.string.yes)) { _, _ ->
                     viewLifecycleOwner.lifecycleScope.launch {
                         viewModel.deleteTrackFromPlaylist(playlist, track.trackId!!)
                     }
-                }.setPositiveButton(R.string.cancel) { _, _ -> }
-        confirmDialog.show()
+                }.setNegativeButton(getString(R.string.no)) { _, _ -> }
+        confirmDialog?.show()
     }
 
     fun sharePlaylist() {
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         if (!viewModel.sharePlaylist(playlist)) {
             Toast.makeText(
                 requireContext(),
-                "В этом плейлисте нет списка треков, которым можно поделиться",
+                getString(R.string.no_track_to_share),
                 Toast.LENGTH_SHORT
             ).show()
         }
     }
 
     fun deletePLaylist() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         confirmDialog =
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Удалить плейлист")
-                .setMessage("Хотите удалить плейлист?")
-                .setNegativeButton("Нет") { _, _ ->
+                .setTitle(R.string.delete_playlist)
+                .setMessage(getString(R.string.want_delete_playlist))
+                .setNegativeButton(R.string.no) { _, _ ->
 
-                }.setPositiveButton("Да") { _, _ ->
+                }.setPositiveButton(R.string.yes) { _, _ ->
                     viewModel.deletePlaylist(playlist)
                     findNavController().navigateUp()
                 }
-        confirmDialog.show()
+        confirmDialog?.show()
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
         const val PLAYLIST_MODEL = "playlist"
         fun newInstance() = PlaylistContentFragment()
     }

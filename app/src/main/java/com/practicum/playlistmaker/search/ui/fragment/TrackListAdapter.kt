@@ -27,7 +27,7 @@ class TrackListAdapter(
         fun bind(model: Track) {
             val cornerRadius = itemView.resources.getDimensionPixelSize(R.dimen.track_cover_radius)
             Glide.with(itemView)
-                .load(model.artworkUrl100)
+                .load(model.artworkUrl60)
                 .placeholder(R.drawable.track_placeholder)
                 .centerCrop()
                 .transform(RoundedCorners(cornerRadius))

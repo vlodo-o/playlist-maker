@@ -11,16 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            style="@style/ToolbarWithArrow"
+            style="@style/ToolbarWithBlackArrow"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
             android:backgroundTint="@android:color/transparent"
+            android:translationZ="0.1dp"
+            app:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:elevation="2dp" />
+            app:showAsAction="always" />
 
         <ImageView
             android:id="@+id/playlist_cover"

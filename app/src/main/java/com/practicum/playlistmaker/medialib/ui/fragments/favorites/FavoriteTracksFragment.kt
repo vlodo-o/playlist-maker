@@ -29,7 +29,7 @@ class FavoriteTracksFragment: Fragment() {
     private lateinit var onTrackClickDebounce: (Track) -> Unit
     private val trackListAdapter = TrackListAdapter (clickListener = { onTrackClickDebounce(it) })
 
-    private lateinit var favoritesRecyclerView: RecyclerView
+    private var favoritesRecyclerView: RecyclerView? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentFavoriteTracksBinding.inflate(inflater, container, false)
@@ -39,23 +39,23 @@ class FavoriteTracksFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY_MILLIS, viewLifecycleOwner.lifecycleScope, false) { track ->
             val bundle = bundleOf(PlayerActivity.TRACK to track)
             findNavController().navigate(R.id.action_medialibFragment_to_playerActivity, bundle)
         }
 
         favoritesRecyclerView = binding.favoritesRecyclerView
 
-        favoritesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        favoritesRecyclerView.adapter = trackListAdapter
+        favoritesRecyclerView?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        favoritesRecyclerView?.adapter = trackListAdapter
 
         viewModel.favoritesState.observe(viewLifecycleOwner) { state ->
             if (state is FavoritesViewState.FavoriteTracks) {
                 trackListAdapter.setTracks(state.tracks)
-                favoritesRecyclerView.visibility = View.VISIBLE
+                favoritesRecyclerView?.visibility = View.VISIBLE
             }
             else {
-                favoritesRecyclerView.visibility = View.GONE
+                favoritesRecyclerView?.visibility = View.GONE
             }
         }
 
@@ -68,7 +68,7 @@ class FavoriteTracksFragment: Fragment() {
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
         fun newInstance() = FavoriteTracksFragment()
 
     }

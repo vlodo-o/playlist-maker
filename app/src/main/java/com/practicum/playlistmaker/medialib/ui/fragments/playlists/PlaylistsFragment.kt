@@ -66,6 +66,12 @@ class PlaylistsFragment : Fragment() {
         viewModel.getPlaylists()
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getPlaylists()
+    }
+
     private fun initViews() {
         newPlayListButton = binding.newPlaylistButton
         playlistsRecyclerView = binding.playlistsRecyclerview

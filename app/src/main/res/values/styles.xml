@@ -17,6 +17,12 @@
         <item name="titleTextAppearance">@style/ToolbarTextAppearance</item>
     </style>
 
+    <style name="ToolbarWithBlackArrow">
+        <item name="contentInsetStartWithNavigation">0dp</item>
+        <item name="navigationIconTint">@color/yp_black</item>
+        <item name="navigationIcon">?homeAsUpIndicator</item>
+    </style>
+
     <style name="ToolbarTextAppearance">
         <item name="android:textSize">22sp</item>
     </style>

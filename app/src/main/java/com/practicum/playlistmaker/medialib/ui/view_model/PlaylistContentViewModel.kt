@@ -31,10 +31,7 @@ private val playlistInteractor: PlaylistInteractor
 
     fun sumTracksTime(playlistModel: PlaylistModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            val duration = SimpleDateFormat("mm", Locale.getDefault())
-                .format(playlistInteractor.getPlaylistDuration(playlistModel))
-
-            _playlistDuration.postValue(duration)
+            _playlistDuration.postValue(getFormatTime(playlistInteractor.getPlaylistDuration(playlistModel)))
         }
     }
 
@@ -54,7 +51,7 @@ private val playlistInteractor: PlaylistInteractor
             playlistInteractor.deleteTrackFromPlaylist(playlist, trackId)
             withContext(Dispatchers.Main) {
                 getAllPlaylistTracks(playlist.id)
-                _tracksCount.postValue(getTrackCount(playlist.tracksCount.dec()))
+                _tracksCount.postValue(getTrackCount(playlist.tracksCount))
                 sumTracksTime(playlist)
             }
         }
@@ -71,13 +68,33 @@ private val playlistInteractor: PlaylistInteractor
         val lastTwoDigits = count % 100
 
         val ending = when {
+            lastTwoDigits in 11..19 -> "треков"
             lastDigit == 1 -> "трек"
             lastDigit in 2..4 -> "трека"
-            lastTwoDigits in 11..19 -> "треков"
             else -> "треков"
         }
 
         return "$count $ending"
+    }
+
+
+    fun getFormatTime(time: Int): String {
+        val minTime = SimpleDateFormat("mm", Locale.getDefault()).format(time)
+        val lastDigit = minTime.toInt() % 10
+        val lastTwoDigits = minTime.toInt() % 100
+
+        val minute = when {
+            lastTwoDigits in 11..19 -> "минут"
+            lastDigit == 1 -> "минута"
+            lastDigit in 2..4 -> "минуты"
+            else -> "минут"
+        }
+        Log.d("minutes", "$minTime $lastDigit $lastTwoDigits $minute")
+        val duration = if (minTime.toInt() > 0) {
+            minTime.trimStart('0')
+        }
+        else { 0 }
+        return "$duration $minute"
     }
 
     fun sharePlaylist(playlist: PlaylistModel): Boolean {
