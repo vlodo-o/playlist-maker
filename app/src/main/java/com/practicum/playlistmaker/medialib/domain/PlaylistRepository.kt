@@ -8,9 +8,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface PlaylistRepository {
 
+    suspend fun updatePlaylist(playlist: PlaylistModel)
+
     suspend fun createPlaylist(name: String, description: String, imagePath: String)
 
-    suspend fun deletePlaylist(playlistId: Int)
+    suspend fun deletePlaylist(playlist: PlaylistModel)
 
     suspend fun getPlaylists(): Flow<List<PlaylistModel>>
 
@@ -19,4 +21,10 @@ interface PlaylistRepository {
     suspend fun saveImageToPrivateStorage(uri: Uri, name: String): Uri
 
     fun isTrackInPlaylist(playlist: PlaylistModel, track: Track): Boolean
+
+    suspend fun getAllPlaylistTracks(playlistId: Int): Flow<List<Track>>
+
+    suspend fun deleteTrackFromPlaylist(playlist: PlaylistModel, trackId: String)
+
+    suspend fun getPlaylistDuration(playlist: PlaylistModel): Int
 }

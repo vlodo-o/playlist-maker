@@ -17,7 +17,7 @@ import org.koin.dsl.module
 val interactorModule = module {
 
     single<PlaylistInteractor> {
-        PlaylistInteractorImpl(get())
+        PlaylistInteractorImpl(get(), get())
     }
 
     single<FavoriteTrackInteractor> {

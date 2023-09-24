@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.medialib.data.db.entity.TrackEntity
 
-object TrackListConverter {
+class TrackListConverter {
     @TypeConverter
     fun listToJson(value: List<String>): String {
         return Gson().toJson(value)

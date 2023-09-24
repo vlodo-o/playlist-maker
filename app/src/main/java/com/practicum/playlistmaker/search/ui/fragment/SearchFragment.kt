@@ -24,7 +24,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.FragmentMedialibBinding
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.activity.PlayerActivity
 import com.practicum.playlistmaker.search.data.network.NetworkError
@@ -43,8 +42,8 @@ class SearchFragment : Fragment() {
 
     private lateinit var onTrackClickDebounce: (Track) -> Unit
 
-    private val trackListAdapter = TrackListAdapter { onTrackClickDebounce(it) }
-    private val trackHistoryAdapter = TrackListAdapter { onTrackClickDebounce(it) }
+    private val trackListAdapter = TrackListAdapter (clickListener = { onTrackClickDebounce(it) })
+    private val trackHistoryAdapter = TrackListAdapter (clickListener = { onTrackClickDebounce(it) })
 
     private var searchText = ""
 
@@ -85,7 +84,7 @@ class SearchFragment : Fragment() {
             }
         }
 
-        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
+        onTrackClickDebounce = debounce(CLICK_DEBOUNCE_DELAY_MILLIS, viewLifecycleOwner.lifecycleScope, false) { track ->
             viewModel.addTrackToHistory(track)
             val bundle = bundleOf(PlayerActivity.TRACK to track)
             findNavController().navigate(R.id.action_searchFragment_to_playerActivity, bundle)
@@ -252,7 +251,7 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
         fun newInstance() = SearchFragment()
     }
 

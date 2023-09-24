@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -39,9 +40,11 @@ class PlaylistsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
 
-        onPlaylistClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { track ->
-            //val bundle = bundleOf(PlayerActivity.TRACK to track)
-            //findNavController().navigate(R.id.action_medialibFragment_to_playerActivity, bundle)
+        onPlaylistClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false) { playlist ->
+            val bundle = Bundle().apply {
+                putSerializable(PlaylistContentFragment.PLAYLIST_MODEL, playlist)
+            }
+            findNavController().navigate(R.id.action_medialibFragment_to_playlistFragment, bundle)
         }
 
         playlistsRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -60,6 +63,12 @@ class PlaylistsFragment : Fragment() {
             }
         }
 
+        viewModel.getPlaylists()
+    }
+
+
+    override fun onResume() {
+        super.onResume()
         viewModel.getPlaylists()
     }
 

@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import com.practicum.playlistmaker.medialib.data.converters.PlaylistDbConverter
 import com.practicum.playlistmaker.medialib.data.converters.PlaylistTrackDbConverter
+import com.practicum.playlistmaker.medialib.data.converters.TrackListConverter
 import com.practicum.playlistmaker.medialib.data.db.AppDatabase
 import com.practicum.playlistmaker.medialib.data.db.entity.PlaylistEntity
 import com.practicum.playlistmaker.medialib.domain.PlaylistRepository
@@ -24,6 +26,7 @@ class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val playlistDbConverter: PlaylistDbConverter,
     private val playlistTrackDbConverter: PlaylistTrackDbConverter,
+    private val trackListConverter: TrackListConverter,
     private val context: Context
 ): PlaylistRepository {
 
@@ -39,8 +42,8 @@ class PlaylistRepositoryImpl(
         appDatabase.playlistDao().insertPlaylist(playlist)
     }
 
-    override suspend fun deletePlaylist(playlistId: Int) {
-        appDatabase.playlistDao().deletePlaylist(playlistId)
+    override suspend fun deletePlaylist(playlist: PlaylistModel) {
+        appDatabase.playlistDao().deletePlaylist(playlist.id)
     }
 
     override suspend fun getPlaylists(): Flow<List<PlaylistModel>> = flow {
@@ -75,10 +78,44 @@ class PlaylistRepositoryImpl(
         return playlist.tracks.contains(track.trackId)
     }
 
-    private suspend fun updatePlaylist(playlist: PlaylistModel) {
+    override suspend fun getAllPlaylistTracks(playlistId: Int): Flow<List<Track>> = flow {
+        val trackIds = trackListConverter.jsonToList(appDatabase.playlistDao().getAllPlaylistTracksId(playlistId))
+        val resultTracks: ArrayList<Track> = arrayListOf()
+        trackIds.forEach { id ->
+            val track = appDatabase.playlistTrackDao().getPlaylistTrack(id)
+            if (track != null) resultTracks.add(playlistTrackDbConverter.map(track))
+        }
+        emit(resultTracks)
+    }
+
+    override suspend fun deleteTrackFromPlaylist(playlist: PlaylistModel, trackId: String) {
+        playlist.tracks.remove(trackId)
+        playlist.tracksCount -= 1
+        val playlists = appDatabase.playlistDao().updatePlaylistAndGetAll(playlistDbConverter.map(playlist))
+        if (!trackInPlaylists(playlists, trackId)) appDatabase.playlistTrackDao().deletePlaylistTrack(trackId)
+    }
+
+    override suspend fun getPlaylistDuration(playlist: PlaylistModel): Int {
+        val trackList = playlist.tracks.map { appDatabase.playlistTrackDao().getPlaylistTrack(it) }
+        var timeSum = 0
+        for (track in trackList) {
+            timeSum += track.trackTimeMillis
+        }
+        return timeSum
+    }
+
+    override suspend fun updatePlaylist(playlist: PlaylistModel) {
         appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlist))
     }
+
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<PlaylistModel> {
         return playlists.map {playlist -> playlistDbConverter.map(playlist)}
+    }
+
+    private fun trackInPlaylists(playlistList: List<PlaylistEntity>, trackId: String): Boolean {
+        for (playlist in playlistList) {
+            if (playlist.tracks.contains(trackId)) return true
+        }
+        return false
     }
 }

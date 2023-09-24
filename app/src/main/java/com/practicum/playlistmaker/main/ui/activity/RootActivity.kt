@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.main.ui.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -19,13 +20,9 @@ class RootActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.newPlaylistFragment) {
-                bottomNavigationView.visibility = View.GONE
-            }
-            else {
-                bottomNavigationView.visibility = View.VISIBLE
-            }
-
+            bottomNavigationView.isVisible = !(destination.id == R.id.newPlaylistFragment
+                    || destination.id == R.id.playlistContentFragment
+                    || destination.id == R.id.editPlaylistFragment)
         }
 
     }
