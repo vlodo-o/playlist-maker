@@ -11,9 +11,12 @@ import com.practicum.playlistmaker.medialib.data.db.entity.PlaylistEntity
 import com.practicum.playlistmaker.medialib.data.db.entity.PlaylistTrackEntity
 import com.practicum.playlistmaker.medialib.data.db.entity.TrackEntity
 
-@Database(version = 4, entities = [TrackEntity::class, PlaylistEntity::class, PlaylistTrackEntity::class])
+@Database(
+    version = 4,
+    entities = [TrackEntity::class, PlaylistEntity::class, PlaylistTrackEntity::class],
+    exportSchema = false)
 @TypeConverters(TrackListConverter::class)
-abstract class AppDatabase : RoomDatabase(){
+abstract class AppDatabase : RoomDatabase() {
     abstract fun trackDao(): TrackDao
     abstract fun playlistDao(): PlaylistDao
     abstract fun playlistTrackDao(): PlaylistTrackDao

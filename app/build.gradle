@@ -4,6 +4,8 @@ plugins {
     id "kotlin-parcelize"
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
+    //Kotlin symbol processing  for Room
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -59,7 +61,7 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.6.1"
     implementation "io.insert-koin:koin-android:3.3.0"
 
-    def fragment_version = "1.5.5"
+    def fragment_version = "1.5.6"
     implementation "androidx.fragment:fragment:$fragment_version"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
@@ -68,10 +70,14 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
-    def room_version = "2.5.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    kapt("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
+    // Room
+    def roomVersion = "2.5.2"
+    implementation ("androidx.room:room-runtime:$roomVersion")
+    implementation ("androidx.room:room-ktx:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+
+    //Kotlin symbol processing for Room
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     implementation platform('com.google.firebase:firebase-bom:32.3.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
