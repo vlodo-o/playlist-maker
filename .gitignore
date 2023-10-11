@@ -10,3 +10,4 @@
 local.properties
 /.idea/
 /app/.idea/
+/app/google-services.json
