@@ -1,9 +1,12 @@
 package com.practicum.playlistmaker.player.domain.api
 
 import com.practicum.playlistmaker.player.domain.models.PlayerState
+import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.StateFlow
 
 interface PlayerInteractor {
-    fun preparePlayer(trackUrl: String)
+    val playerStateFlow: StateFlow<PlayerState>
+    fun playNewTrack(track: Track)
     fun startPlayer(trackUrl: String)
     fun pausePlayer()
     fun stopPlayer()

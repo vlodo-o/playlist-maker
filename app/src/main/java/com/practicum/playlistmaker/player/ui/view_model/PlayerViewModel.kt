@@ -44,40 +44,60 @@ class PlayerViewModel (
 
     private var timerJob: Job? = null
 
+    init {
+        observePlayerState()
+    }
+
+    private fun observePlayerState() {
+        viewModelScope.launch {
+            playerInteractor.playerStateFlow.collect { state ->
+                when (state) {
+                    PlayerState.DEFAULT -> {
+                        _playState.postValue(false)
+                        timerJob?.cancel()
+                    }
+                    PlayerState.PREPARED -> {
+                        _playState.postValue(false)
+                    }
+                    PlayerState.PLAYING -> {
+                        _playState.postValue(true)
+                        startTimer()
+                    }
+                    PlayerState.PAUSED -> {
+                        _playState.postValue(false)
+                        timerJob?.cancel()
+                    }
+                }
+            }
+        }
+    }
+
+    fun playNewTrack(track: Track) {
+        playerInteractor.playNewTrack(track)
+        _playState.value = true
+        startTimer()
+    }
     private fun startPlayer(trackUrl: String) {
         playerInteractor.startPlayer(trackUrl)
         _playState.value = true
         startTimer()
     }
 
-    fun pausePlayer() {
+    private fun pausePlayer() {
         playerInteractor.pausePlayer()
         _playState.value = false
         timerJob?.cancel()
     }
 
     override fun onCleared() {
-        playerInteractor.stopPlayer()
         _playState.value = false
         super.onCleared()
     }
 
     fun playbackControl(trackUrl: String) {
-        when(playerInteractor.getPlayerState()) {
-            PlayerState.PLAYING -> {
-                pausePlayer()
-            }
-            PlayerState.PREPARED, PlayerState.PAUSED -> {
-                startPlayer(trackUrl)
-            }
-            PlayerState.DEFAULT -> {
-                startPlayer(trackUrl)
-                playerInteractor.setTrackCompletionListener {
-                    _playState.value = false
-                    timerJob?.cancel()
-                    _playProgress.value = TIMER_START
-                }
-            }
+        when (playerInteractor.getPlayerState()) {
+            PlayerState.PLAYING -> pausePlayer()
+            else -> startPlayer(trackUrl)
         }
     }
 
@@ -149,7 +169,6 @@ class PlayerViewModel (
     }
 
     companion object {
-        const val TIMER_START = "00:00"
         private const val DURATION_UPDATE_DELAY_MS = 300L
     }
 

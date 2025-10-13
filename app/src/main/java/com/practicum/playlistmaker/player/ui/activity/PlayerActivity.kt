@@ -45,7 +45,7 @@ class PlayerActivity : AppCompatActivity() {
 
         initListeners()
         setTrackInfo()
-
+        viewModel.playNewTrack(track)
         onPlaylistClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, this.lifecycleScope, false) { playlist ->
             playlistName = playlist.name
             viewModel.addToPlaylist(playlist, track)
@@ -97,18 +97,15 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.getPlaylists()
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.pausePlayer()
-    }
-
     private fun initListeners() {
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
 
         binding.playButton.setOnClickListener {
-            viewModel.playbackControl(track.previewUrl)
+            ensureNotificationPermission {
+                viewModel.playbackControl(track.previewUrl)
+            }
         }
 
         binding.favoriteButton.setOnClickListener {
@@ -190,8 +187,46 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.checkFavorite(track.trackId)
     }
 
+    private fun ensureNotificationPermission(onGranted: () -> Unit) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            ) {
+                onGranted()
+            } else {
+                androidx.core.app.ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    REQUEST_CODE_NOTIFICATIONS
+                )
+            }
+        } else {
+            onGranted()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_NOTIFICATIONS) {
+            if (grantResults.isNotEmpty() && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                viewModel.playbackControl(track.previewUrl)
+            } else {
+                Toast.makeText(this, "Разрешите уведомления, чтобы управлять плеером в фоне", Toast.LENGTH_SHORT).show()
+                // можно всё равно играть без уведомления:
+                viewModel.playbackControl(track.previewUrl)
+            }
+        }
+    }
+
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         const val TRACK = "track"
+        private const val REQUEST_CODE_NOTIFICATIONS = 1001
     }
 }
