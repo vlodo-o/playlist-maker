@@ -43,9 +43,11 @@ class PlayerActivity : AppCompatActivity() {
 
         track = intent.getParcelableExtra(TRACK)!!
 
+        viewModel.playNewTrack(track)
+
         initListeners()
         setTrackInfo()
-        viewModel.playNewTrack(track)
+
         onPlaylistClickDebounce = debounce(CLICK_DEBOUNCE_DELAY, this.lifecycleScope, false) { playlist ->
             playlistName = playlist.name
             viewModel.addToPlaylist(playlist, track)
