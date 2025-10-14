@@ -1,8 +1,12 @@
 package com.practicum.playlistmaker.di
 
+import android.content.ComponentName
 import android.content.Context
 import androidx.room.Room
 import com.practicum.playlistmaker.medialib.data.db.AppDatabase
+import com.practicum.playlistmaker.player.data.MediaControllerTrackPlayer
+import com.practicum.playlistmaker.player.data.MusicService
+import com.practicum.playlistmaker.player.domain.api.TrackPlayer
 import com.practicum.playlistmaker.search.data.network.NetworkClient
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.search.data.storage.SearchHistoryStorage
@@ -43,6 +47,13 @@ val dataModule = module {
 
     single<ExternalNavigator> {
         ExternalNavigatorImpl(androidContext())
+    }
+
+    single<TrackPlayer> {
+        MediaControllerTrackPlayer(
+            context = androidContext(),
+            mediaBrowserServiceComponent = ComponentName(androidContext(), MusicService::class.java)
+        )
     }
 
 }

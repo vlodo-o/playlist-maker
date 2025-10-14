@@ -10,7 +10,9 @@
         <item name="colorSecondaryVariant">@color/yp_light_gray</item>
         <item name="colorOnSecondary">@color/yp_gray</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <item name="android:statusBarColor">@color/white_background</item>
+        <item name="android:navigationBarColor">@color/white_background</item>
+        <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/ys_display_medium</item>
 

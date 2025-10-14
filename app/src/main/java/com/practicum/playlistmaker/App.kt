@@ -1,6 +1,9 @@
 package com.practicum.playlistmaker
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import com.practicum.playlistmaker.di.dataModule
 import com.practicum.playlistmaker.di.interactorModule
@@ -25,6 +28,16 @@ class App : Application() {
 
         darkTheme = getKoin().get<SettingsInteractor>().getThemeSettings().darkTheme
         switchTheme(darkTheme)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "music_channel",
+                "Music Playback",
+                NotificationManager.IMPORTANCE_LOW
+            )
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+        }
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
