@@ -2,7 +2,7 @@
 
 Android приложение для поиска, прослушивания и сохранения музыки в плейлисты. Для поиска музыки используется API iTunes.
 
-#### Стек: Kotlin, Gradle, Xml, View, Fragment, MVVM, ViewModel, Koin, Retrofit2, SQLite, Room, Glide, Coroutines, Flow, LiveData, Jetpack Navigation Component, Firebase.
+#### Стек: Kotlin, Gradle, Xml, View, Fragment, MVVM, ViewModel, Koin, Retrofit2, SQLite, Room, Glide, MediaLibraryService, ExoPlayer, Coroutines, Flow, LiveData, Jetpack Navigation Component, Firebase.
 
 ### [Скачать приложение (apk)](https://github.com/vlodo-o/playlist-maker/blob/master/app/release/app-release.apk)
 
@@ -15,6 +15,8 @@ Android приложение для поиска, прослушивания и 
 ## Экран плеера 
 На экране плеера можно прослушать трек, сохранить его в избранное или плейлист, а также посмотреть информацию о треке.
 <br><br><img src="https://github.com/vlodo-o/playlist-maker/assets/25658578/8f216c97-f55b-480e-a53d-39994536a4a4" width="300">
+<br><br>Плеер работает в фоновом режиме: воспроизведение продолжается при сворачивании приложения. Для удобства создаётся уведомление с информацией о текущем треке и кнопками управления.
+<br><br><img src="https://github.com/user-attachments/assets/16170a00-58ec-41fb-95d6-e43134d9ea84" width="300">
 ## Экран "Медиатека" 
 На экране "Медиатека" можно увидеть список треков, сохраненных в избранное, а также список плейлистов.
 <br><br><img src="https://github.com/vlodo-o/playlist-maker/assets/25658578/28c2767a-df42-4208-93d2-ae1362883746" width="300">
